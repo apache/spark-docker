@@ -19,7 +19,7 @@
 
 # Utility for creating well-formed pull request merges and pushing them to Apache
 # Spark.
-#   usage: ./merge_spark_pr.py    (see config env vars below)
+#   usage: ./merge_spark_docker_pr.py    (see config env vars below)
 #
 # This utility assumes you already have a local Spark git folder and that you
 # have added remotes corresponding to both (i) the github apache Spark
@@ -43,7 +43,7 @@ except ImportError:
     JIRA_IMPORTED = False
 
 # Location of your Spark git development area
-SPARK_HOME = os.environ.get("SPARK_HOME", os.getcwd())
+SPARK_DOCKER_HOME = os.environ.get("SPARK_DOCKER_HOME", os.getcwd())
 # Remote name which points to the Gihub site
 PR_REMOTE_NAME = os.environ.get("PR_REMOTE_NAME", "apache-github")
 # Remote name which points to Apache git
@@ -59,8 +59,8 @@ JIRA_PASSWORD = os.environ.get("JIRA_PASSWORD", "")
 GITHUB_OAUTH_KEY = os.environ.get("GITHUB_OAUTH_KEY")
 
 
-GITHUB_BASE = "https://github.com/apache/spark/pull"
-GITHUB_API_BASE = "https://api.github.com/repos/apache/spark"
+GITHUB_BASE = "https://github.com/apache/spark-docker/pull"
+GITHUB_API_BASE = "https://api.github.com/repos/apache/spark-docker"
 JIRA_BASE = "https://issues.apache.org/jira/browse"
 JIRA_API_BASE = "https://issues.apache.org/jira"
 # Prefix added to temporary branches
@@ -77,7 +77,7 @@ def get_json(url):
         if "X-RateLimit-Remaining" in e.headers and e.headers["X-RateLimit-Remaining"] == "0":
             print(
                 "Exceeded the GitHub API rate limit; see the instructions in "
-                + "dev/merge_spark_pr.py to configure an OAuth token for making authenticated "
+                + "dev/merge_spark_docker_pr.py to configure an OAuth token for making authenticated "
                 + "GitHub requests."
             )
         else:
@@ -468,7 +468,7 @@ def get_current_ref():
 def main():
     global original_head
 
-    os.chdir(SPARK_HOME)
+    os.chdir(SPARK_DOCKER_HOME)
     original_head = get_current_ref()
 
     # Check this up front to avoid failing the JIRA update at the very end
