@@ -475,11 +475,6 @@ def main():
     if not JIRA_USERNAME or not JIRA_PASSWORD:
         continue_maybe("The env-vars JIRA_USERNAME and/or JIRA_PASSWORD are not set. Continue?")
 
-    branches = get_json("%s/branches" % GITHUB_API_BASE)
-    branch_names = list(filter(lambda x: x.startswith("branch-"), [x["name"] for x in branches]))
-    # Assumes branch names can be sorted lexicographically
-    latest_branch = sorted(branch_names, reverse=True)[0]
-
     pr_num = input("Which pull request would you like to merge? (e.g. 34): ")
     pr = get_json("%s/pulls/%s" % (GITHUB_API_BASE, pr_num))
     pr_events = get_json("%s/issues/%s/events" % (GITHUB_API_BASE, pr_num))
@@ -531,28 +526,6 @@ def main():
     base_ref = pr["head"]["ref"]
     pr_repo_desc = "%s/%s" % (user_login, base_ref)
 
-    # Merged pull requests don't appear as merged in the GitHub API;
-    # Instead, they're closed by asfgit.
-    merge_commits = [
-        e for e in pr_events if e["actor"]["login"] == "asfgit" and e["event"] == "closed"
-    ]
-
-    if merge_commits:
-        merge_hash = merge_commits[0]["commit_id"]
-        message = get_json("%s/commits/%s" % (GITHUB_API_BASE, merge_hash))["commit"]["message"]
-
-        print("Pull request %s has already been merged, assuming you want to backport" % pr_num)
-        commit_is_downloaded = (
-            run_cmd(["git", "rev-parse", "--quiet", "--verify", "%s^{commit}" % merge_hash]).strip()
-            != ""
-        )
-        if not commit_is_downloaded:
-            fail("Couldn't find any merge commit for #%s, you may need to update HEAD." % pr_num)
-
-        print("Found commit %s:\n%s" % (merge_hash, message))
-        cherry_pick(pr_num, merge_hash, latest_branch)
-        sys.exit(0)
-
     if not bool(pr["mergeable"]):
         msg = (
             "Pull request %s is not mergeable in its current form.\n" % pr_num
@@ -566,11 +539,7 @@ def main():
 
     merged_refs = [target_ref]
 
-    merge_hash = merge_pr(pr_num, target_ref, title, body, pr_repo_desc)
-
-    pick_prompt = "Would you like to pick %s into another branch?" % merge_hash
-    while input("\n%s (y/n): " % pick_prompt).lower() == "y":
-        merged_refs = merged_refs + [cherry_pick(pr_num, merge_hash, latest_branch)]
+    merge_pr(pr_num, target_ref, title, body, pr_repo_desc)
 
     if JIRA_IMPORTED:
         if JIRA_USERNAME and JIRA_PASSWORD:
