@@ -41,6 +41,8 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       matrix:
         spark_version:
@@ -70,7 +72,9 @@ jobs:
       - name: Generate tags
         run: |
           TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
-
+          # The pull_request_target job:
+          # 1. Use the `apache` in apache repo (push/pr).
+          # 2. Use the fork repo owner in fork repo PR.
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           TEST_REPO=ghcr.io/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
@@ -98,7 +102,7 @@ jobs:
         with:
           context: ${{ env.IMAGE_PATH }}
           push: true
-          tags: ${{ env.TEST_REPO }}:${{ env.UNIQUE_IMAGE_TAG }}
+          tags: ${{ env.TEST_REPO }}/${{ env.IMAGE_NAME }}:${{ env.UNIQUE_IMAGE_TAG }}
           platforms: linux/amd64,linux/arm64
 
       - name: Image digest
