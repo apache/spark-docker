@@ -41,6 +41,8 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       matrix:
         spark_version:
@@ -71,7 +73,7 @@ jobs:
         run: |
           TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
 
-          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_OWNER=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
           TEST_REPO=ghcr.io/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
           IMAGE_PATH=${{ matrix.spark_version }}/$TAG
@@ -98,7 +100,7 @@ jobs:
         with:
           context: ${{ env.IMAGE_PATH }}
           push: true
-          tags: ${{ env.TEST_REPO }}:${{ env.UNIQUE_IMAGE_TAG }}
+          tags: ${{ env.TEST_REPO }}/${{ env.IMAGE_NAME }}:${{ env.UNIQUE_IMAGE_TAG }}
           platforms: linux/amd64,linux/arm64
 
       - name: Image digest
