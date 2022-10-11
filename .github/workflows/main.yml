@@ -72,7 +72,7 @@ jobs:
       - name: Generate tags
         run: |
           TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
-          # The pull_request_target job:
+          # The pull_request_target event leads to:
           # 1. Use the `apache` in apache repo (push/pr).
           # 2. Use the fork repo owner in fork repo PR.
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
