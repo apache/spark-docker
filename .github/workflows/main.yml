@@ -50,36 +50,29 @@ jobs:
         java_version:
           - ${{ inputs.java }}
         image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     steps:
       - name: Checkout Spark repository
         uses: actions/checkout@v2
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: network=host
+        uses: docker/setup-buildx-action@v1
 
       - name: Generate tags
         run: |
           TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
 
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          TEST_REPO=localhost:5000/$REPO_OWNER/spark-docker
+          TEST_REPO=ghcr.io/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
           IMAGE_PATH=${{ matrix.spark_version }}/$TAG
           UNIQUE_IMAGE_TAG=${{ matrix.spark_version }}-$TAG
 
           # Unique image tag in each version: scala2.12-java11-python3-ubuntu
           echo "UNIQUE_IMAGE_TAG=${UNIQUE_IMAGE_TAG}" >> $GITHUB_ENV
-          # Test repo: localhost:5000/apache/spark-docker
+          # Test repo: ghcr.io/apache/spark-docker
           echo "TEST_REPO=${TEST_REPO}" >> $GITHUB_ENV
           # Image name: spark
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
@@ -93,13 +86,12 @@ jobs:
           echo "IMAGE_NAME: "${IMAGE_NAME}
           echo "IMAGE_PATH: "${IMAGE_PATH}
 
-      - name: Build and push test image
-        uses: docker/build-push-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v2
         with:
           context: ${{ env.IMAGE_PATH }}
           tags: ${{ env.TEST_REPO }}/${{ env.IMAGE_NAME }}:${{ env.UNIQUE_IMAGE_TAG }}
           platforms: linux/amd64,linux/arm64
-          push: true
 
       - name: Test - Checkout Spark repository
         uses: actions/checkout@v2
@@ -167,17 +159,31 @@ jobs:
           OPTS+="-Dspark.kubernetes.test.deployMode=minikube "
           OPTS+="-Dspark.kubernetes.test.imageRepo=${TEST_REPO} -Dspark.kubernetes.test.imageTag=${UNIQUE_IMAGE_TAG} "
           OPTS+="-Dspark.kubernetes.test.jvmImage=${IMAGE_NAME} "
+          OPTS+="-Dspark.kubernetes.test.pythonImage=${IMAGE_NAME} "
+          OPTS+="-Dspark.kubernetes.test.rImage=${IMAGE_NAME} "
 
-          build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run SparkPi"'
-
-          if echo ${{ matrix.image_suffix }} | grep -q "python"; then
-            OPTS+="-Dspark.kubernetes.test.pythonImage=${IMAGE_NAME} "
-            build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run PySpark"'
-          fi
-
-          if echo ${{ matrix.image_suffix }} | grep -q "r-"; then
-            OPTS+="-Psparkr -Dtest.include.tags=r -Dspark.kubernetes.test.rImage=${IMAGE_NAME} "
+          if echo ${{ matrix.image_suffix }} | grep -q "python3-r-ubuntu"; then
+            # Prepare PV test
+            PVC_TMP_DIR=$(mktemp -d)
+            export PVC_TESTS_HOST_PATH=$PVC_TMP_DIR
+            export PVC_TESTS_VM_PATH=$PVC_TMP_DIR
+            minikube mount ${PVC_TESTS_HOST_PATH}:${PVC_TESTS_VM_PATH} --gid=0 --uid=185 &
+            # Run all K8s test for all in one image
             build/sbt $OPTS 'kubernetes-integration-tests/testOnly'
+          else
+            # Run basic test for Scala/PySpark/SparkR image
+            build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run SparkPi"'
+
+            # Run basic test for PySpark image
+            if echo ${{ matrix.image_suffix }} | grep -q "python"; then
+              build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run PySpark"'
+            fi
+
+            # Run basic test for SparkR image
+            if echo ${{ matrix.image_suffix }} | grep -q "r-"; then
+              OPTS+="-Psparkr -Dtest.include.tags=r "
+              build/sbt $OPTS 'kubernetes-integration-tests/testOnly'
+            fi
           fi
 
       - name: Test - Upload Spark on K8S integration tests log files
