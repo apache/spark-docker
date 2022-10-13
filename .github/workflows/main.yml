@@ -69,8 +69,9 @@ jobs:
           IMAGE_NAME=spark
           IMAGE_PATH=${{ matrix.spark_version }}/$TAG
           UNIQUE_IMAGE_TAG=${{ matrix.spark_version }}-$TAG
+          IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
-          # Unique image tag in each version: scala2.12-java11-python3-ubuntu
+          # Unique image tag in each version: 3.3.0-scala2.12-java11-python3-ubuntu
           echo "UNIQUE_IMAGE_TAG=${UNIQUE_IMAGE_TAG}" >> $GITHUB_ENV
           # Test repo: ghcr.io/apache/spark-docker
           echo "TEST_REPO=${TEST_REPO}" >> $GITHUB_ENV
@@ -78,6 +79,8 @@ jobs:
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
           # Image dockerfile path: 3.3.0/scala2.12-java11-python3-ubuntu
           echo "IMAGE_PATH=${IMAGE_PATH}" >> $GITHUB_ENV
+          # Image URL: ghcr.io/apache/spark-docker/spark:3.3.0-scala2.12-java11-python3-ubuntu
+          echo "IMAGE_URL=${IMAGE_URL}" >> $GITHUB_ENV
 
       - name: Print Image tags
         run: |
@@ -85,12 +88,13 @@ jobs:
           echo "TEST_REPO: "${TEST_REPO}
           echo "IMAGE_NAME: "${IMAGE_NAME}
           echo "IMAGE_PATH: "${IMAGE_PATH}
+          echo "IMAGE_URL: "${IMAGE_URL}
 
       - name: Build image
         uses: docker/build-push-action@v2
         with:
           context: ${{ env.IMAGE_PATH }}
-          tags: ${{ env.TEST_REPO }}/${{ env.IMAGE_NAME }}:${{ env.UNIQUE_IMAGE_TAG }}
+          tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
 
       - name: Test - Checkout Spark repository
@@ -133,7 +137,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/coursier
-          key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}
+          key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-coursier
 
       - name: Test - Start minikube
         run: |
@@ -152,7 +156,8 @@ jobs:
         working-directory: ${{ github.workspace }}/spark
         run: |
           kubectl create clusterrolebinding serviceaccounts-cluster-admin --clusterrole=cluster-admin --group=system:serviceaccounts || true
-          minikube image load ${{ env.TEST_REPO }}/${{ env.IMAGE_NAME }}:${{ env.UNIQUE_IMAGE_TAG }}
+          minikube image load ${{ env.IMAGE_URL }}
+
           eval $(minikube docker-env)
           OPTS="-Pkubernetes -Pkubernetes-integration-tests "
           OPTS+="-Dspark.kubernetes.test.driverRequestCores=0.5 -Dspark.kubernetes.test.executorRequestCores=0.2 "
@@ -163,6 +168,11 @@ jobs:
           OPTS+="-Dspark.kubernetes.test.rImage=${IMAGE_NAME} "
 
           if echo ${{ matrix.image_suffix }} | grep -q "python3-r-ubuntu"; then
+            # Prepare test jar for client tests
+            CONTAINER_TMP_NAME=spark-example-image
+            docker create -ti --name $CONTAINER_TMP_NAME ${{ env.IMAGE_URL }} bash
+            docker cp $CONTAINER_TMP_NAME:/opt/spark/examples/jars/spark-examples_${{ matrix.scala_version }}-${{ matrix.spark_version }}.jar .
+            docker rm -f $CONTAINER_TMP_NAME
             # Prepare PV test
             PVC_TMP_DIR=$(mktemp -d)
             export PVC_TESTS_HOST_PATH=$PVC_TMP_DIR
@@ -192,6 +202,3 @@ jobs:
         with:
           name: spark-on-kubernetes-it-log
           path: "**/target/integration-tests.log"
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
