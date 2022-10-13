@@ -41,6 +41,15 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    # Due to the multi-platform images cannot be exported with the `docker` export type,
+    # https://github.com/docker/buildx/issues/59
+    # So, the local registry (push) is used here rather than local build (load):
+    # https://github.com/docker/build-push-action/blob/master/docs/advanced/local-registry.md
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     strategy:
       matrix:
         spark_version:
@@ -59,13 +68,16 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          # This required by local registry
+          driver-opts: network=host
 
       - name: Generate tags
         run: |
           TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
 
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          TEST_REPO=ghcr.io/$REPO_OWNER/spark-docker
+          TEST_REPO=localhost:5000/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
           IMAGE_PATH=${{ matrix.spark_version }}/$TAG
           UNIQUE_IMAGE_TAG=${{ matrix.spark_version }}-$TAG
@@ -90,13 +102,13 @@ jobs:
           echo "IMAGE_PATH: "${IMAGE_PATH}
           echo "IMAGE_URL: "${IMAGE_URL}
 
-      - name: Build image
+      - name: Build and push test image
         uses: docker/build-push-action@v2
         with:
           context: ${{ env.IMAGE_PATH }}
           tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
-          load: true
+          push: true
 
       - name: Test - Checkout Spark repository
         uses: actions/checkout@v3
@@ -122,6 +134,9 @@ jobs:
       - name: Test - Install Java ${{ inputs.java }}
         uses: actions/setup-java@v3
         with:
+          # This is required after v2, now just keep same distribution with v1
+          # https://github.com/actions/setup-java/releases/tag/v2.0.0
+          distribution: 'zulu'
           java-version: ${{ matrix.java_version }}
 
       - name: Test - Cache Scala, SBT and Maven
