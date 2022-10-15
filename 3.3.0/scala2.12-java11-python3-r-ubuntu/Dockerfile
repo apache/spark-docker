@@ -18,10 +18,13 @@ FROM eclipse-temurin:11-jre-focal
 
 ARG spark_uid=185
 
+RUN groupadd --system --gid=${spark_uid} spark && \
+    useradd --system --uid=${spark_uid} --gid=spark spark
+
 RUN set -ex && \
     apt-get update && \
     ln -s /lib /lib64 && \
-    apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools && \
+    apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
     apt install -y r-base r-base-dev && \
@@ -80,5 +83,3 @@ RUN chmod a+x /opt/entrypoint.sh
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
-# Specify the User that the actual main process will run as
-USER ${spark_uid}
