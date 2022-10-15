@@ -33,6 +33,7 @@ RUN set -ex && \
     mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
     touch /opt/spark/RELEASE && \
+    chown -R spark:spark /opt/spark && \
     rm /bin/sh && \
     ln -sv /bin/bash /bin/sh && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
@@ -58,6 +59,7 @@ RUN set -ex; \
     rm -rf "$GNUPGHOME" spark.tgz.asc; \
     \
     tar -xf spark.tgz --strip-components=1; \
+    chown -R spark:spark .; \
     mv jars /opt/spark/; \
     mv bin /opt/spark/; \
     mv sbin /opt/spark/; \
