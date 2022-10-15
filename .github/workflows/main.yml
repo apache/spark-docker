@@ -49,7 +49,7 @@ jobs:
           - ${{ inputs.scala }}
         java_version:
           - ${{ inputs.java }}
-        image_suffix: [python3-r-ubuntu]
+        image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
     steps:
       - name: Checkout Spark repository
         uses: actions/checkout@v2

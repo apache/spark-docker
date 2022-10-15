@@ -103,5 +103,13 @@ case "$1" in
     ;;
 esac
 
+switch_spark_if_root() {
+  if [ $(id -u) -ne 0 ]; then
+    return
+  else
+    echo gosu spark
+  fi
+}
+
 # Execute the container CMD under tini for better hygiene
-exec /usr/bin/tini -s -- "${CMD[@]}"
+exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
