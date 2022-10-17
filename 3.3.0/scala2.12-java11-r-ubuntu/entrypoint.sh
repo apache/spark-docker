@@ -103,5 +103,12 @@ case "$1" in
     ;;
 esac
 
+# Switch to spark if no USER specified (root by default) otherwise use USER directly
+switch_spark_if_root() {
+  if [ $(id -u) -eq 0 ]; then
+    echo gosu spark
+  fi
+}
+
 # Execute the container CMD under tini for better hygiene
-exec /usr/bin/tini -s -- "${CMD[@]}"
+exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
