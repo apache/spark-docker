@@ -103,10 +103,9 @@ case "$1" in
     ;;
 esac
 
+# Switch to spark if no USER specified (root by default) otherwise use USER directly
 switch_spark_if_root() {
-  if [ $(id -u) -ne 0 ]; then
-    return
-  else
+  if [ $(id -u) -eq 0 ]; then
     echo gosu spark
   fi
 }
