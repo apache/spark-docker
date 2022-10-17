@@ -17,8 +17,16 @@
 # limitations under the License.
 #
 
-INPUT_VERSION=$1
-VERSION=${INPUT_VERSION:-"3.3.0"}
+# Usage: $0 [version]
+# Generate dockerfiles for specified spark version.
+#
+# Examples:
+# - Add 3.3.0 dockerfiles:
+#   $ ./add-dockerfiles.sh
+# - Add 3.3.1 dockerfiles:
+#   $ ./add-dockerfiles.sh 3.3.1
+
+VERSION=${1:-"3.3.0"}
 
 TAGS="
 scala2.12-java11-python3-r-ubuntu
