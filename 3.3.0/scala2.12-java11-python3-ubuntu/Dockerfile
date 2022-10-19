@@ -43,7 +43,7 @@ RUN set -ex && \
 # https://downloads.apache.org/spark/KEYS
 ENV SPARK_TGZ_URL=https://dlcdn.apache.org/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.tgz \
     SPARK_TGZ_ASC_URL=https://downloads.apache.org/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.tgz.asc \
-    GPG_KEY=E298A3A825C0D65DFD57CBB651716619E084DAB9
+    GPG_KEY=80FB8EBE8EBA68504989703491B5DC815DBF10D3
 
 RUN set -ex; \
     export SPARK_TMP="$(mktemp -d)"; \
@@ -52,7 +52,7 @@ RUN set -ex; \
     wget -nv -O spark.tgz.asc "$SPARK_TGZ_ASC_URL"; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --keyserver hkps://keyserver.pgp.com --recv-key "$GPG_KEY" || \
-    gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$GPG_KEY" || \
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$GPG_KEY"; \
     gpg --batch --verify spark.tgz.asc spark.tgz; \
     gpgconf --kill all; \
     rm -rf "$GNUPGHOME" spark.tgz.asc; \

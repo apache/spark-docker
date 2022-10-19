@@ -21,6 +21,11 @@ from argparse import ArgumentParser
 
 from jinja2 import Environment, FileSystemLoader
 
+GPG_KEY_DICT = {
+    # issuer "maxgekk@apache.org"
+    "3.3.0": "80FB8EBE8EBA68504989703491B5DC815DBF10D3",
+}
+
 
 def parse_opts():
     parser = ArgumentParser(prog="template")
@@ -76,6 +81,7 @@ def main():
             HAVE_PY=opts.pyspark,
             HAVE_R=opts.sparkr,
             SPARK_VERSION=opts.spark_version,
+            SPARK_GPG_KEY=GPG_KEY_DICT.get(opts.spark_version),
         )
     )
 
