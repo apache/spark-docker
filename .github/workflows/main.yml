@@ -155,6 +155,10 @@ jobs:
           path: ~/.cache/coursier
           key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-coursier
 
+      - name : Test - Run spark application for standalone cluster on docker
+        working-directory: ${{ github.workspace }}/spark
+        run: testing/run_tests.sh ${TEST_REPO} ${IMAGE_NAME} ${UNIQUE_IMAGE_TAG}
+
       - name: Test - Start minikube
         run: |
           # See more in "Installation" https://minikube.sigs.k8s.io/docs/start/
