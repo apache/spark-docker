@@ -117,7 +117,6 @@ function wait_container_ready() {
     echo >&2 "===> ${container_name} is ready."
 }
 
-# spark-submit
 function run_spark_pi() {
     docker_run \
       "$SUBMIT_CONTAINER_NAME" \
@@ -125,7 +124,7 @@ function run_spark_pi() {
       "/opt/spark/bin/spark-submit --master spark://$MASTER_CONTAINER_NAME:7077 /opt/spark/examples/src/main/python/pi.py 20"
 }
 
-# 总入口
+# Run smoke test
 function run_smoke_test() {
     local docker_run_command=$1
 
