@@ -21,6 +21,6 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 . "${SCRIPT_DIR}/testing.sh"
 
-smoke_test "$1" "$2" "$3" "$4"
+smoke_test "$1"
 
 echo "Test successfully finished"

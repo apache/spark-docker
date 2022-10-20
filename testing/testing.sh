@@ -147,11 +147,8 @@ function run_smoke_test() {
 # Run a master and work and verify they start up and connect to each other successfully.
 # And run a Spark Pi to complete smoke test.
 function smoke_test() {
-    local test_repo="$1"
-    local image_name="$2"
-    local unique_image_tag="$3"
-    local scala_spark_version="$4"
-    local image_url=${test_repo}/${image_name}:${unique_image_tag}
+    local scala_spark_version="$1"
+    local image_url=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
     echo >&2 "===> Smoke test for $image_url"
     run_smoke_test ""
