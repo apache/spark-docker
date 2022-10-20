@@ -26,6 +26,7 @@ NETWORK_NAME=spark-net-bridge
 SUBMIT_CONTAINER_NAME=spark-submit
 MASTER_CONTAINER_NAME=spark-master
 WORKER_CONTAINER_NAME=spark-work
+SPARK_MASTER_PORT=7077
 SPARK_MASTER_WEBUI_CONTAINER_PORT=8080
 SPARK_MASTER_WEBUI_HOST_PORT=8080
 SPARK_WORKER_WEBUI_CONTAINER_PORT=8081
@@ -79,7 +80,7 @@ function start_spark_worker() {
     docker_run \
     "$WORKER_CONTAINER_NAME" \
     "--publish $SPARK_WORKER_WEBUI_HOST_PORT:$SPARK_WORKER_WEBUI_CONTAINER_PORT $1" \
-    "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$MASTER_CONTAINER_NAME:7077" > /dev/null
+    "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$MASTER_CONTAINER_NAME:$SPARK_MASTER_PORT" > /dev/null
 }
 
 function wait_container_ready() {
@@ -121,7 +122,7 @@ function run_spark_pi() {
     docker_run \
       "$SUBMIT_CONTAINER_NAME" \
       "$1" \
-      "/opt/spark/bin/spark-submit --master spark://$MASTER_CONTAINER_NAME:7077 /opt/spark/examples/src/main/python/pi.py 20"
+      "/opt/spark/bin/spark-submit --master spark://$MASTER_CONTAINER_NAME:$SPARK_MASTER_PORT --class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_${scala_spark_version}.jar 20"
 }
 
 # Run smoke test
@@ -149,6 +150,7 @@ function smoke_test() {
     local test_repo="$1"
     local image_name="$2"
     local unique_image_tag="$3"
+    local scala_spark_version="$4"
     local image_url=${test_repo}/${image_name}:${unique_image_tag}
 
     echo >&2 "===> Smoke test for $image_url"
