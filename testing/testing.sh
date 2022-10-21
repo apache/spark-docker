@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -40,9 +40,18 @@ SPARK_MASTER_WEBUI_HOST_PORT=8080
 SPARK_WORKER_WEBUI_CONTAINER_PORT=8081
 SPARK_WORKER_WEBUI_HOST_PORT=8081
 
+SCALA_VERSION="2.12"
+SPARK_VERSION="3.3.0"
+IMAGE_URL=
+
 # Create a new docker bridge network
 function create_network() {
-    docker network create --driver bridge "$NETWORK_NAME" > /dev/null
+  if [ ! -z $(docker network ls --filter name=^${NETWORK_NAME}$ --format="{{ .Name }}") ]; then
+    # bridge network already exists, need to kill containers attached to the network and remove network
+    cleanup
+    remove_network
+  fi
+  docker network create --driver bridge "$NETWORK_NAME" > /dev/null
 }
 
 # Remove docker network
@@ -62,6 +71,7 @@ function cleanup() {
   fi
 }
 
+# Exec docker run command
 function docker_run() {
   local container_name="$1"
   local docker_run_command="$2"
@@ -70,12 +80,13 @@ function docker_run() {
   echo >&2 "===> Starting ${container_name}"
   if [ "$container_name" = "$MASTER_CONTAINER_NAME" -o "$container_name" = "$WORKER_CONTAINER_NAME" ]; then
     # --detach: Run spark-master and spark-worker in background, like spark-daemon.sh behaves
-    eval "docker run --rm --detach --network $NETWORK_NAME --name ${container_name} ${docker_run_command} $image_url ${args}"
+    eval "docker run --rm --detach --network $NETWORK_NAME --name ${container_name} ${docker_run_command} $IMAGE_URL ${args}"
   else
-    eval "docker run --rm --network $NETWORK_NAME --name ${container_name} ${docker_run_command} $image_url ${args}"
+    eval "docker run --rm --network $NETWORK_NAME --name ${container_name} ${docker_run_command} $IMAGE_URL ${args}"
   fi
 }
 
+# Start up a spark master
 function start_spark_master() {
   docker_run \
     "$MASTER_CONTAINER_NAME" \
@@ -83,6 +94,7 @@ function start_spark_master() {
     "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master" > /dev/null
 }
 
+# Start up a spark worker
 function start_spark_worker() {
   docker_run \
     "$WORKER_CONTAINER_NAME" \
@@ -90,6 +102,7 @@ function start_spark_worker() {
     "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$MASTER_CONTAINER_NAME:$SPARK_MASTER_PORT" > /dev/null
 }
 
+# Wait container ready until endpoint returns successfully
 function wait_container_ready() {
   local container_name="$1"
   local host_port="$2"
@@ -125,6 +138,7 @@ function wait_container_ready() {
   echo >&2 "===> ${container_name} is ready."
 }
 
+# Run spark pi
 function run_spark_pi() {
   docker_run \
     "$SUBMIT_CONTAINER_NAME" \
@@ -154,11 +168,40 @@ function run_smoke_test_in_standalone() {
 # Run a master and worker and verify they start up and connect to each other successfully.
 # And run a smoke test in standalone cluster.
 function smoke_test() {
-  local image_url=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
+  if [ -z "$IMAGE_URL" ]; then
+    echo >&2 "Image url is need, please set it with --image-url"
+    exit -1
+  fi
 
-  echo >&2 "===> Smoke test for $image_url as root"
+  echo >&2 "===> Smoke test for $IMAGE_URL as root"
   run_smoke_test_in_standalone
 
-  echo >&2 "===> Smoke test for $image_url as non-root"
+  echo >&2 "===> Smoke test for $IMAGE_URL as non-root"
   run_smoke_test_in_standalone "--user spark"
 }
+
+# Parse arguments
+while (( "$#" )); do
+  case $1 in
+    --scala-version)
+      SCALA_VERSION="$2"
+      shift
+      ;;
+    --spark-version)
+      SPARK_VERSION="$2"
+      shift
+      ;;
+    --image-url)
+      IMAGE_URL="$2"
+      shift
+      ;;
+    *)
+      echo "Unexpected command line flag $2 $1."
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+# Run smoke test
+smoke_test

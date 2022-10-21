@@ -60,9 +60,6 @@ jobs:
           - ${{ inputs.java }}
         image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
     steps:
-      - name : Test - Run spark application for standalone cluster on docker
-        run: testing/run_tests.sh --scala-version ${{ matrix.scala_version }} --spark-version ${{ matrix.spark_version }}
-
       - name: Checkout Spark repository
         uses: actions/checkout@v2
 
@@ -112,6 +109,9 @@ jobs:
           tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
           push: true
+
+      - name : Test - Run spark application for standalone cluster on docker
+        run: testing/run_tests.sh --image-url $IMAGE_URL --scala-version ${{ matrix.scala_version }} --spark-version ${{ matrix.spark_version }}
 
       - name: Test - Checkout Spark repository
         uses: actions/checkout@v3

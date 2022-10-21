@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -16,34 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -exo errexit
-
-SCALA_VERSION="2.12"
-SPARK_VERSION="3.3.0"
-
-# Parse arguments
-while (( "$#" )); do
-  case $1 in
-    --scala-version)
-      SCALA_VERSION="$2"
-      shift
-      ;;
-    --spark-version)
-      SPARK_VERSION="$2"
-      shift
-      ;;
-    *)
-      echo "Unexpected command line flag $2 $1."
-      exit 1
-      ;;
-  esac
-  shift
-done
+set -eo errexit
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 . "${SCRIPT_DIR}/testing.sh"
-
-smoke_test
 
 echo "Test successfully finished"
