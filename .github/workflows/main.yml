@@ -60,6 +60,9 @@ jobs:
           - ${{ inputs.java }}
         image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
     steps:
+      - name : Test - Run spark application for standalone cluster on docker
+        run: testing/run_tests.sh --scala-version ${{ matrix.scala_version }} --spark-version ${{ matrix.spark_version }}
+
       - name: Checkout Spark repository
         uses: actions/checkout@v2
 
@@ -154,9 +157,6 @@ jobs:
         with:
           path: ~/.cache/coursier
           key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-coursier
-
-      - name : Test - Run spark application for standalone cluster on docker
-        run: testing/run_tests.sh ${{ matrix.scala_version }}-${{ matrix.spark_version }}
 
       - name: Test - Start minikube
         run: |
