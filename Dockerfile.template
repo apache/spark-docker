@@ -27,7 +27,6 @@ RUN set -ex && \
     apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu && \
     {%- if HAVE_PY %}
     apt install -y python3 python3-pip && \
-    pip3 install --upgrade pip setuptools && \
     {%- endif %}
     {%- if HAVE_R %}
     apt install -y r-base r-base-dev && \

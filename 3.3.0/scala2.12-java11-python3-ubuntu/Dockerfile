@@ -26,7 +26,6 @@ RUN set -ex && \
     ln -s /lib /lib64 && \
     apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu && \
     apt install -y python3 python3-pip && \
-    pip3 install --upgrade pip setuptools && \
     mkdir -p /opt/spark && \
     mkdir /opt/spark/python && \
     mkdir -p /opt/spark/examples && \
