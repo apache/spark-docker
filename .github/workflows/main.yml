@@ -60,7 +60,7 @@ jobs:
           - ${{ inputs.java }}
         image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
     steps:
-      - name: Checkout Spark repository
+      - name: Checkout Spark Docker repository
         uses: actions/checkout@v2
 
       - name: Set up QEMU
