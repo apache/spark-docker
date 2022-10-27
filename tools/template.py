@@ -24,6 +24,8 @@ from jinja2 import Environment, FileSystemLoader
 GPG_KEY_DICT = {
     # issuer "maxgekk@apache.org"
     "3.3.0": "80FB8EBE8EBA68504989703491B5DC815DBF10D3",
+    # issuer "yumwang@apache.org"
+    "3.3.1": "86727D43E73A415F67A0B1A14E68B3E6CD473653",
 }
 
 
