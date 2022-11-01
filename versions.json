@@ -1,0 +1,35 @@
+{
+  "versions": [
+    {
+      "path": "3.3.0/scala2.12-java11-python3-ubuntu",
+      "tags": [
+        "3.3.0-scala2.12-java11-python3-ubuntu",
+        "3.3.0-python3",
+        "python3",
+        "3.3.0",
+        "latest"
+      ]
+    },
+    {
+      "path": "3.3.0/scala2.12-java11-r-ubuntu",
+      "tags": [
+        "3.3.0-scala2.12-java11-r-ubuntu",
+        "scala2.12-java11-r-ubuntu",
+        "3.3.0-r",
+        "r"
+      ]
+    },
+    {
+      "path": "3.3.0/scala2.12-java11-ubuntu",
+      "tags": [
+        "3.3.0-scala2.12-java11-ubuntu", "3.3.0-scala", "scala"
+      ]
+    },
+    {
+      "path": "3.3.0/scala2.12-java11-python3-r-ubuntu",
+      "tags": [
+        "3.3.0-scala2.12-java11-python3-r-ubuntu"
+      ]
+    }
+  ]
+}
