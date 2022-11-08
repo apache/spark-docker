@@ -34,15 +34,15 @@ on:
         description: 'The Scala version of Spark image.'
         required: true 
         type: string
-        default: 2.12
+        default: '2.12'
       java:
         description: 'The Java version of Spark image.'
         required: true 
         type: string
-        default: 11
+        default: '11'
       publish:
         description: 'Publish the image or not.'
-        default: '3.3.0'
+        default: false
         type: boolean
         required: true
       repository:

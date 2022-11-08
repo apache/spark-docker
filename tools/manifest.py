@@ -29,7 +29,7 @@ def parse_opts():
         dest="mode",
         choices=["tags"],
         type=str,
-        help="The path to specific dockerfile",
+        help="The print mode of script",
     )
 
     parser.add_argument(
