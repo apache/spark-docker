@@ -51,9 +51,9 @@ on:
         default: ghcr.io/apache/spark-docker
         type: choice
         options:
-        # This required the write permission of apache/spark-docker (Spark Committer)
+        # GHCR: This required the write permission of apache/spark-docker (Spark Committer)
         - ghcr.io/apache/spark-docker
-        # This required the DOCKERHUB_TOKEN and DOCKERHUB_USER
+        # Dockerhub: This required the DOCKERHUB_TOKEN and DOCKERHUB_USER (Spark Committer)
         - apache
 
 jobs:
@@ -68,3 +68,4 @@ jobs:
       scala: ${{ inputs.scala }}
       java: ${{ inputs.java }}
       publish: ${{ inputs.publish }}
+      repository: ${{ inputs.repository }}
