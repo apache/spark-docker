@@ -30,16 +30,6 @@ on:
         options:
         - 3.3.0
         - 3.3.1
-      scala:
-        description: 'The Scala version of Spark image.'
-        required: true 
-        type: string
-        default: '2.12'
-      java:
-        description: 'The Java version of Spark image.'
-        required: true 
-        type: string
-        default: '11'
       publish:
         description: 'Publish the image or not.'
         default: false
@@ -58,6 +48,11 @@ on:
 
 jobs:
   run-build:
+    # if: startsWith(inputs.spark, '3.3')
+    strategy:
+      matrix:
+        scala: [2.12]
+        java: [11]
     permissions:
       packages: write
     name: Run
@@ -65,7 +60,7 @@ jobs:
     uses: ./.github/workflows/main.yml
     with:
       spark: ${{ inputs.spark }}
-      scala: ${{ inputs.scala }}
-      java: ${{ inputs.java }}
+      scala: ${{ matrix.scala }}
+      java: ${{ matrix.java }}
       publish: ${{ inputs.publish }}
       repository: ${{ inputs.repository }}
