@@ -14,7 +14,6 @@
       "path": "3.3.1/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.3.1-scala2.12-java11-r-ubuntu",
-        "scala2.12-java11-r-ubuntu",
         "3.3.1-r",
         "r"
       ]
@@ -45,7 +44,6 @@
       "path": "3.3.0/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.3.0-scala2.12-java11-r-ubuntu",
-        "scala2.12-java11-r-ubuntu",
         "3.3.0-r"
       ]
     },
