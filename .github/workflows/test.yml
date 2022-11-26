@@ -1,0 +1,76 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: "Test"
+
+on:
+  workflow_dispatch:
+    inputs:
+      spark:
+        description: 'The Spark version of Spark image.'
+        required: true
+        default: '3.3.1'
+        type: choice
+        options:
+        - 3.3.0
+        - 3.3.1
+      java:
+        description: 'The Java version of Spark image.'
+        default: 11
+        type: string
+        required: true
+      scala:
+        description: 'The Scala version of Spark image.'
+        default: 2.12
+        type: string
+        required: true
+      image-type:
+        description: 'The image type of Spark image.'
+        required: true
+        default: 'python'
+        type: choice
+        options:
+        - all
+        - python
+        - scala
+        - r
+      repository:
+        description: The registry to be tested.
+        required: true
+        type: string
+        default: ghcr.io/apache/spark-docker
+      image-tag:
+        description: 'The image tag to be tested.'
+        default: latest
+        type: string
+        required: true
+
+jobs:
+  run-build:
+    name: Test ${{ inputs.repository }}/spark:${{ inputs.image-tag }}
+    secrets: inherit
+    uses: ./.github/workflows/main.yml
+    with:
+      spark: ${{ inputs.spark }}
+      scala: ${{ inputs.scala }}
+      java: ${{ inputs.java }}
+      repository: ${{ inputs.repository }}
+      image-tag: ${{ inputs.image-tag }}
+      image-type: ${{ inputs.image-type }}
+      build: false
