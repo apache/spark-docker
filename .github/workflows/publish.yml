@@ -36,7 +36,7 @@ on:
         type: boolean
         required: true
       repository:
-        description: The registry to be published (Avaliable only when publish is true).
+        description: The registry to be published (Available only when publish is true).
         required: false
         default: ghcr.io/apache/spark-docker
         type: choice

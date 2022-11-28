@@ -48,7 +48,7 @@ on:
         type: boolean
         default: false
       repository:
-        description: The registry to be published/tested. (Avaliable only in publish/test workflow)
+        description: The registry to be published/tested. (Available only in publish/test workflow)
         required: false
         type: string
         default: ghcr.io/apache/spark-docker
@@ -59,7 +59,7 @@ on:
         default: python
       image-tag:
         type: string
-        description: The image tag to be tested. (Avaliable only in test workflow)
+        description: The image tag to be tested. (Available only in test workflow)
         required: false
         default: latest
 
