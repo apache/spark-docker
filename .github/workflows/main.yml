@@ -37,13 +37,18 @@ on:
         required: true
         type: string
         default: 11
+      build:
+        description: Build the image or not.
+        required: false
+        type: boolean
+        default: true
       publish:
         description: Publish the image or not.
         required: false
         type: boolean
         default: false
       repository:
-        description: The registry to be published (Avaliable only when publish is selected).
+        description: The registry to be published/tested. (Available only in publish/test workflow)
         required: false
         type: string
         default: ghcr.io/apache/spark-docker
@@ -52,6 +57,11 @@ on:
         required: false
         type: string
         default: python
+      image-tag:
+        type: string
+        description: The image tag to be tested. (Available only in test workflow)
+        required: false
+        default: latest
 
 jobs:
   main:
@@ -83,11 +93,18 @@ jobs:
           esac
           TAG=scala${{ inputs.scala }}-java${{ inputs.java }}-$SUFFIX
 
-          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          TEST_REPO=localhost:5000/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
           IMAGE_PATH=${{ inputs.spark }}/$TAG
-          UNIQUE_IMAGE_TAG=${{ inputs.spark }}-$TAG
+          if [ "${{ inputs.build }}" == "true" ]; then
+            # Use the local registry to build and test
+            REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+            TEST_REPO=localhost:5000/$REPO_OWNER/spark-docker
+            UNIQUE_IMAGE_TAG=${{ inputs.spark }}-$TAG
+          else
+            # Use specified {repository}/spark:{image-tag} image to test
+            TEST_REPO=${{ inputs.repository }}
+            UNIQUE_IMAGE_TAG=${{ inputs.image-tag }}
+          fi
           IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
           PUBLISH_REPO=${{ inputs.repository }}
@@ -119,15 +136,18 @@ jobs:
           echo "PUBLISH_IMAGE_URL:"${PUBLISH_IMAGE_URL}
 
       - name: Build - Set up QEMU
+        if: ${{ inputs.build }}
         uses: docker/setup-qemu-action@v2
 
       - name: Build - Set up Docker Buildx
+        if: ${{ inputs.build }}
         uses: docker/setup-buildx-action@v2
         with:
           # This required by local registry
           driver-opts: network=host
 
       - name: Build - Build and push test image
+        if: ${{ inputs.build }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ env.IMAGE_PATH }}

@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: "Publish"
+name: "Test"
 
 on:
   workflow_dispatch:
@@ -25,44 +25,52 @@ on:
       spark:
         description: 'The Spark version of Spark image.'
         required: true
-        default: '3.3.0'
+        default: '3.3.1'
         type: choice
         options:
         - 3.3.0
         - 3.3.1
-      publish:
-        description: 'Publish the image or not.'
-        default: false
-        type: boolean
+      java:
+        description: 'The Java version of Spark image.'
+        default: 11
+        type: string
         required: true
-      repository:
-        description: The registry to be published (Available only when publish is true).
-        required: false
-        default: ghcr.io/apache/spark-docker
+      scala:
+        description: 'The Scala version of Spark image.'
+        default: 2.12
+        type: string
+        required: true
+      image-type:
+        description: 'The image type of Spark image.'
+        required: true
+        default: 'python'
         type: choice
         options:
-        # GHCR: This required the write permission of apache/spark-docker (Spark Committer)
-        - ghcr.io/apache/spark-docker
-        # Dockerhub: This required the DOCKERHUB_TOKEN and DOCKERHUB_USER (Spark Committer)
-        - apache
+        - all
+        - python
+        - scala
+        - r
+      repository:
+        description: The registry to be tested.
+        required: true
+        type: string
+        default: ghcr.io/apache/spark-docker
+      image-tag:
+        description: 'The image tag to be tested.'
+        default: latest
+        type: string
+        required: true
 
 jobs:
   run-build:
-    # if: startsWith(inputs.spark, '3.3')
-    strategy:
-      matrix:
-        scala: [2.12]
-        java: [11]
-        image-type: ["all", "python", "scala", "r"]
-    permissions:
-      packages: write
-    name: Run
+    name: Test ${{ inputs.repository }}/spark:${{ inputs.image-tag }}
     secrets: inherit
     uses: ./.github/workflows/main.yml
     with:
       spark: ${{ inputs.spark }}
-      scala: ${{ matrix.scala }}
-      java: ${{ matrix.java }}
-      publish: ${{ inputs.publish }}
+      scala: ${{ inputs.scala }}
+      java: ${{ inputs.java }}
       repository: ${{ inputs.repository }}
-      image-type: ${{ matrix.image-type }}
+      image-tag: ${{ inputs.image-tag }}
+      image-type: ${{ inputs.image-type }}
+      build: false
