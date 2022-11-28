@@ -47,6 +47,11 @@ on:
         required: false
         type: string
         default: ghcr.io/apache/spark-docker
+      image-type:
+        description: The image type of the image (all, python, scala, r).
+        required: false
+        type: string
+        default: python
 
 jobs:
   main:
@@ -60,41 +65,33 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-    strategy:
-      matrix:
-        spark_version:
-          - ${{ inputs.spark }}
-        scala_version:
-          - ${{ inputs.scala }}
-        java_version:
-          - ${{ inputs.java }}
-        image_suffix: [python3-ubuntu, ubuntu, r-ubuntu, python3-r-ubuntu]
     steps:
       - name: Checkout Spark Docker repository
         uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          # This required by local registry
-          driver-opts: network=host
-
-      - name: Generate tags
+      - name: Prepare - Generate tags
         run: |
-          TAG=scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-${{ matrix.image_suffix }}
+          case "${{ inputs.image-type }}" in
+              all) SUFFIX=python3-r-ubuntu
+                  ;;
+              python) SUFFIX=python3-ubuntu
+                  ;;
+              r) SUFFIX=r-ubuntu
+                  ;;
+              scala) SUFFIX=ubuntu
+                  ;;
+          esac
+          TAG=scala${{ inputs.scala }}-java${{ inputs.java }}-$SUFFIX
 
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           TEST_REPO=localhost:5000/$REPO_OWNER/spark-docker
           IMAGE_NAME=spark
-          IMAGE_PATH=${{ matrix.spark_version }}/$TAG
-          UNIQUE_IMAGE_TAG=${{ matrix.spark_version }}-$TAG
+          IMAGE_PATH=${{ inputs.spark }}/$TAG
+          UNIQUE_IMAGE_TAG=${{ inputs.spark }}-$TAG
           IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
           PUBLISH_REPO=${{ inputs.repository }}
-          PUBLISH_IMAGE_URL=`tools/manifest.py tags -i ${PUBLISH_REPO}/${IMAGE_NAME} -p ${{ matrix.spark_version }}/${TAG}`
+          PUBLISH_IMAGE_URL=`tools/manifest.py tags -i ${PUBLISH_REPO}/${IMAGE_NAME} -p ${{ inputs.spark }}/${TAG}`
 
           # Unique image tag in each version: 3.3.0-scala2.12-java11-python3-ubuntu
           echo "UNIQUE_IMAGE_TAG=${UNIQUE_IMAGE_TAG}" >> $GITHUB_ENV
@@ -110,7 +107,7 @@ jobs:
           echo "PUBLISH_REPO=${PUBLISH_REPO}" >> $GITHUB_ENV
           echo "PUBLISH_IMAGE_URL=${PUBLISH_IMAGE_URL}" >> $GITHUB_ENV
 
-      - name: Print Image tags
+      - name: Prepare - Print Image tags
         run: |
           echo "UNIQUE_IMAGE_TAG: "${UNIQUE_IMAGE_TAG}
           echo "TEST_REPO: "${TEST_REPO}
@@ -121,7 +118,16 @@ jobs:
           echo "PUBLISH_REPO:"${PUBLISH_REPO}
           echo "PUBLISH_IMAGE_URL:"${PUBLISH_IMAGE_URL}
 
-      - name: Build and push test image
+      - name: Build - Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Build - Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          # This required by local registry
+          driver-opts: network=host
+
+      - name: Build - Build and push test image
         uses: docker/build-push-action@v3
         with:
           context: ${{ env.IMAGE_PATH }}
@@ -130,20 +136,20 @@ jobs:
           push: true
 
       - name : Test - Run spark application for standalone cluster on docker
-        run: testing/run_tests.sh --image-url $IMAGE_URL --scala-version ${{ matrix.scala_version }} --spark-version ${{ matrix.spark_version }}
+        run: testing/run_tests.sh --image-url $IMAGE_URL --scala-version ${{ inputs.scala }} --spark-version ${{ inputs.spark }}
 
       - name: Test - Checkout Spark repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           repository: apache/spark
-          ref: v${{ matrix.spark_version }}
+          ref: v${{ inputs.spark }}
           path: ${{ github.workspace }}/spark
 
       - name: Test - Cherry pick commits
         # Apache Spark enable resource limited k8s IT since v3.3.1, cherry-pick patches for old release
         # https://github.com/apache/spark/pull/36087#issuecomment-1251756266
-        if: matrix.spark_version == '3.3.0'
+        if: inputs.spark == '3.3.0'
         working-directory: ${{ github.workspace }}/spark
         run: |
           # SPARK-38802: Add driverRequestCores/executorRequestCores supported
@@ -159,7 +165,7 @@ jobs:
           # This is required after v2, now just keep same distribution with v1
           # https://github.com/actions/setup-java/releases/tag/v2.0.0
           distribution: 'zulu'
-          java-version: ${{ matrix.java_version }}
+          java-version: ${{ inputs.java }}
 
       - name: Test - Cache Scala, SBT and Maven
         uses: actions/cache@v3
@@ -169,13 +175,13 @@ jobs:
             build/scala-*
             build/*.jar
             ~/.sbt
-          key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}
+          key: build-${{ inputs.spark }}-scala${{ inputs.scala }}-java${{ inputs.java }}
 
       - name: Test - Cache Coursier local repository
         uses: actions/cache@v3
         with:
           path: ~/.cache/coursier
-          key: build-${{ matrix.spark_version }}-scala${{ matrix.scala_version }}-java${{ matrix.java_version }}-coursier
+          key: build-${{ inputs.spark }}-scala${{ inputs.scala }}-java${{ inputs.java }}-coursier
 
       - name: Test - Start minikube
         run: |
@@ -205,11 +211,11 @@ jobs:
           OPTS+="-Dspark.kubernetes.test.pythonImage=${IMAGE_NAME} "
           OPTS+="-Dspark.kubernetes.test.rImage=${IMAGE_NAME} "
 
-          if echo ${{ matrix.image_suffix }} | grep -q "python3-r-ubuntu"; then
+          if [ "${{ inputs.image-type }}" = "all" ]; then
             # Prepare test jar for client tests
             CONTAINER_TMP_NAME=spark-example-image
             docker create -ti --name $CONTAINER_TMP_NAME ${{ env.IMAGE_URL }} bash
-            docker cp $CONTAINER_TMP_NAME:/opt/spark/examples/jars/spark-examples_${{ matrix.scala_version }}-${{ matrix.spark_version }}.jar .
+            docker cp $CONTAINER_TMP_NAME:/opt/spark/examples/jars/spark-examples_${{ inputs.scala }}-${{ inputs.spark }}.jar .
             docker rm -f $CONTAINER_TMP_NAME
             # Prepare PV test
             PVC_TMP_DIR=$(mktemp -d)
@@ -223,12 +229,12 @@ jobs:
             build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run SparkPi"'
 
             # Run basic test for PySpark image
-            if echo ${{ matrix.image_suffix }} | grep -q "python"; then
+            if [ "${{ inputs.image-type }}" = "python" ]; then
               build/sbt $OPTS 'kubernetes-integration-tests/testOnly -- -z "Run PySpark"'
             fi
 
             # Run basic test for SparkR image
-            if echo ${{ matrix.image_suffix }} | grep -q "r-"; then
+            if [ "${{ inputs.image-type }}" = "r" ]; then
               OPTS+="-Psparkr -Dtest.include.tags=r "
               build/sbt $OPTS 'kubernetes-integration-tests/testOnly'
             fi

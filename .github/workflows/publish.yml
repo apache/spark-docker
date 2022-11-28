@@ -53,6 +53,7 @@ jobs:
       matrix:
         scala: [2.12]
         java: [11]
+        image-type: ["all", "python", "scala", "r"]
     permissions:
       packages: write
     name: Run
@@ -64,3 +65,4 @@ jobs:
       java: ${{ matrix.java }}
       publish: ${{ inputs.publish }}
       repository: ${{ inputs.repository }}
+      image-type: ${{ matrix.image-type }}
