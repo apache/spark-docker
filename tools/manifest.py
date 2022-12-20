@@ -19,7 +19,33 @@
 
 from argparse import ArgumentParser
 import json
-from statistics import mode
+import subprocess
+
+
+def run_cmd(cmd):
+    if isinstance(cmd, list):
+        return subprocess.check_output(cmd).decode("utf-8")
+    else:
+        return subprocess.check_output(cmd.split(" ")).decode("utf-8")
+
+
+def generate_manifest(versions):
+    output = (
+        "Maintainers: Apache Spark Developers <dev@spark.apache.org> (@ApacheSpark)\n"
+        "GitRepo: https://github.com/apache/spark-docker.git\n\n"
+    )
+    git_commit = run_cmd("git rev-parse HEAD").replace("\n", "")
+    content = (
+        "Tags: %s\n"
+        "Architectures: amd64, arm64v8\n"
+        "GitCommit: %s\n"
+        "Directory: ./%s\n\n"
+    )
+    for version in versions:
+        tags = ", ".join(version["tags"])
+        path = version["path"]
+        output += content % (tags, git_commit, path)
+    return output
 
 
 def parse_opts():
@@ -27,7 +53,7 @@ def parse_opts():
 
     parser.add_argument(
         dest="mode",
-        choices=["tags"],
+        choices=["tags", "manifest"],
         type=str,
         help="The print mode of script",
     )
@@ -76,6 +102,10 @@ def main():
             # Get matched version's tags
             tags = versions[0]["tags"] if versions else []
         print(",".join(["%s:%s" % (image, t) for t in tags]))
+    elif mode == "manifest":
+        with open(version_file, "r") as f:
+            versions = json.load(f).get("versions")
+            print(generate_manifest(versions))
 
 
 if __name__ == "__main__":
