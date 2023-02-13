@@ -17,14 +17,16 @@
 # under the License.
 #
 
-name: "Build and Test (3.3.1)"
+name: "Build and Test (3.3.2)"
 
 on:
   pull_request:
     branches:
       - 'master'
     paths:
-      - '3.3.1/**'
+      - '3.3.2/**'
+      - '.github/workflows/build_3.3.2.yaml'
+      - '.github/workflows/main.yml'
 
 jobs:
   run-build:
@@ -35,7 +37,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/main.yml
     with:
-      spark: 3.3.1
+      spark: 3.3.2
       scala: 2.12
       java: 11
       image-type: ${{ matrix.image-type }}
