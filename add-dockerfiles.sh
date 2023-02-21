@@ -48,6 +48,6 @@ for TAG in $TAGS; do
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
-    cp -f entrypoint.sh.template $VERSION/$TAG/entrypoint.sh
+    python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
     python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
 done
