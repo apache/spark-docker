@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM {{ BASE_IMAGE }}
+FROM eclipse-temurin:11-jre-focal
 
 ARG spark_uid=185
 
@@ -25,16 +25,7 @@ RUN set -ex && \
     apt-get update && \
     ln -s /lib /lib64 && \
     apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu && \
-    {%- if HAVE_PY %}
-    apt install -y python3 python3-pip && \
-    {%- endif %}
-    {%- if HAVE_R %}
-    apt install -y r-base r-base-dev && \
-    {%- endif %}
     mkdir -p /opt/spark && \
-    {%- if HAVE_PY %}
-    mkdir /opt/spark/python && \
-    {%- endif %}
     mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
     touch /opt/spark/RELEASE && \
@@ -48,9 +39,9 @@ RUN set -ex && \
 
 # Install Apache Spark
 # https://downloads.apache.org/spark/KEYS
-ENV SPARK_TGZ_URL=https://dist.apache.org/repos/dist/dev/spark/v3.4.0-rc1-bin/spark-{{ SPARK_VERSION }}-bin-hadoop3.tgz \
-    SPARK_TGZ_ASC_URL=https://dist.apache.org/repos/dist/dev/spark/v3.4.0-rc1-bin/spark-{{ SPARK_VERSION }}-bin-hadoop3.tgz.asc \
-    GPG_KEY={{ SPARK_GPG_KEY }}
+ENV SPARK_TGZ_URL=https://dist.apache.org/repos/dist/dev/spark/v3.4.0-rc1-bin/spark-3.4.0-bin-hadoop3.tgz \
+    SPARK_TGZ_ASC_URL=https://dist.apache.org/repos/dist/dev/spark/v3.4.0-rc1-bin/spark-3.4.0-bin-hadoop3.tgz.asc \
+    GPG_KEY=0C33D35E1A9296B32CF31005ACD84F20930B47E8
 
 RUN set -ex; \
     export SPARK_TMP="$(mktemp -d)"; \
@@ -73,22 +64,12 @@ RUN set -ex; \
     mv examples /opt/spark/; \
     mv kubernetes/tests /opt/spark/; \
     mv data /opt/spark/; \
-    {%- if HAVE_PY %}
-    mv python/pyspark /opt/spark/python/pyspark/; \
-    mv python/lib /opt/spark/python/lib/; \
-    {%- endif %}
-    {%- if HAVE_R %}
-    mv R /opt/spark/; \
-    {%- endif %}
     cd ..; \
     rm -rf "$SPARK_TMP";
 
 COPY entrypoint.sh /opt/
 
 ENV SPARK_HOME /opt/spark
-{%- if HAVE_R %}
-ENV R_HOME /usr/lib/R
-{%- endif %}
 
 WORKDIR /opt/spark/work-dir
 RUN chmod g+w /opt/spark/work-dir
