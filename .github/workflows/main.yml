@@ -163,7 +163,7 @@ jobs:
         with:
           fetch-depth: 0
           repository: apache/spark
-          ref: v${{ inputs.spark }}-rc1
+          ref: v${{ inputs.spark }}-rc7
           path: ${{ github.workspace }}/spark
 
       - name: Test - Cherry pick commits
