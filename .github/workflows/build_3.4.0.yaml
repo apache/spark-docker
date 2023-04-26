@@ -39,5 +39,5 @@ jobs:
     with:
       spark: 3.4.0
       scala: 2.12
-      java: 11
+      java: 17
       image-type: ${{ matrix.image-type }}

@@ -1,35 +1,34 @@
 {
   "versions": [
     {
-      "path": "3.4.0/scala2.12-java11-python3-ubuntu",
+      "path": "3.4.0/scala2.12-java17-python3-ubuntu",
       "tags": [
-        "3.4.0-scala2.12-java11-python3-ubuntu",
+        "3.4.0-scala2.12-java17-python3-ubuntu",
         "3.4.0-python3",
         "3.4.0",
-        "python3",
-        "latest"
+        "python3"
       ]
     },
     {
-      "path": "3.4.0/scala2.12-java11-r-ubuntu",
+      "path": "3.4.0/scala2.12-java17-r-ubuntu",
       "tags": [
-        "3.4.0-scala2.12-java11-r-ubuntu",
+        "3.4.0-scala2.12-java17-r-ubuntu",
         "3.4.0-r",
         "r"
       ]
     },
     {
-      "path": "3.4.0/scala2.12-java11-ubuntu",
+      "path": "3.4.0/scala2.12-java17-ubuntu",
       "tags": [
-        "3.4.0-scala2.12-java11-ubuntu",
+        "3.4.0-scala2.12-java17-ubuntu",
         "3.4.0-scala",
         "scala"
       ]
     },
     {
-      "path": "3.4.0/scala2.12-java11-python3-r-ubuntu",
+      "path": "3.4.0/scala2.12-java17-python3-r-ubuntu",
       "tags": [
-        "3.4.0-scala2.12-java11-python3-r-ubuntu"
+        "3.4.0-scala2.12-java17-python3-r-ubuntu"
       ]
     },
     {

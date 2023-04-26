@@ -33,6 +33,10 @@ scala2.12-java11-python3-r-ubuntu
 scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
+scala2.12-java17-python3-r-ubuntu
+scala2.12-java17-python3-ubuntu
+scala2.12-java17-r-ubuntu
+scala2.12-java17-ubuntu
 "
 
 for TAG in $TAGS; do
@@ -43,6 +47,10 @@ for TAG in $TAGS; do
 
     if echo $TAG | grep -q "r-"; then
         OPTS+=" --sparkr"
+    fi
+
+    if echo $TAG | grep -q "java17"; then
+        OPTS+=" --image eclipse-temurin:17-jre"
     fi
 
     OPTS+=" --spark-version $VERSION"

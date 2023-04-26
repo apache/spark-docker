@@ -27,11 +27,9 @@ on:
         required: true
         default: '3.4.0'
         type: choice
+        # We support GA docker publish since Apache Spark 3.4
         options:
         - 3.4.0
-        - 3.3.2
-        - 3.3.1
-        - 3.3.0
       publish:
         description: 'Publish the image or not.'
         default: false
@@ -50,11 +48,11 @@ on:
 
 jobs:
   run-build:
-    # if: startsWith(inputs.spark, '3.3')
+    # if: startsWith(inputs.spark, '3.4')
     strategy:
       matrix:
         scala: [2.12]
-        java: [11]
+        java: [17]
         image-type: ["all", "python", "scala", "r"]
     permissions:
       packages: write
