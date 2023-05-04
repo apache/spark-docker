@@ -48,6 +48,11 @@ for TAG in $TAGS; do
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
-    python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
-    python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
+
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ]; then
+        python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
+        python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
+    else
+        python3 tools/template.py $OPTS -f r-python.template > $VERSION/$TAG/Dockerfile
+    fi
 done
