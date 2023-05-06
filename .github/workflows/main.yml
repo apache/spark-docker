@@ -306,6 +306,7 @@ jobs:
         if: ${{ inputs.publish }}
         uses: docker/build-push-action@v3
         with:
+          build-args: BASE_IMAGE=${{ env.BASE_IMAGE_URL }}
           context: ${{ env.IMAGE_PATH }}
           push: true
           tags: ${{ env.PUBLISH_IMAGE_URL }}
