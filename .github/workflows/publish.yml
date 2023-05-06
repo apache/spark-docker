@@ -49,13 +49,36 @@ on:
         - apache
 
 jobs:
-  run-build:
+  # We first build and publish the base image
+  run-base-build:
     # if: startsWith(inputs.spark, '3.3')
     strategy:
       matrix:
         scala: [2.12]
         java: [11]
-        image-type: ["all", "python", "scala", "r"]
+        image-type: ["scala"]
+    permissions:
+      packages: write
+    name: Run Base
+    secrets: inherit
+    uses: ./.github/workflows/main.yml
+    with:
+      spark: ${{ inputs.spark }}
+      scala: ${{ matrix.scala }}
+      java: ${{ matrix.java }}
+      publish: ${{ inputs.publish }}
+      repository: ${{ inputs.repository }}
+      image-type: ${{ matrix.image-type }}
+
+  # Then publish the all / python / r images
+  run-build:
+    needs: run-base-build
+    # if: startsWith(inputs.spark, '3.3')
+    strategy:
+      matrix:
+        scala: [2.12]
+        java: [11]
+        image-type: ["all", "python", "r"]
     permissions:
       packages: write
     name: Run

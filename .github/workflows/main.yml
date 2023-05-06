@@ -107,11 +107,18 @@ jobs:
             TEST_REPO=${{ inputs.repository }}
             UNIQUE_IMAGE_TAG=${{ inputs.image-tag }}
           fi
+
+          # We can't use the real image for build because we haven't publish the image yet.
+          # The base image for build, it's something like localhost:5000/$REPO_OWNER/spark-docker/spark:3.3.0-scala2.12-java11-ubuntu
           BASE_IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$BASE_IMGAE_TAG
           IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
           PUBLISH_REPO=${{ inputs.repository }}
           PUBLISH_IMAGE_URL=`tools/manifest.py tags -i ${PUBLISH_REPO}/${IMAGE_NAME} -p ${{ inputs.spark }}/${TAG}`
+          # The base image for publish, it's a real image like apache/spark:3.3.0-scala2.12-java11-ubuntu
+          if [ "${{ inputs.publish }}" == "true" ]; then
+            BASE_IMAGE_URL=${PUBLISH_REPO}/${IMAGE_NAME}:$BASE_IMGAE_TAG
+          fi
 
           # Unique image tag in each version: 3.3.0-scala2.12-java11-python3-ubuntu
           echo "UNIQUE_IMAGE_TAG=${UNIQUE_IMAGE_TAG}" >> $GITHUB_ENV
@@ -157,7 +164,8 @@ jobs:
           driver-opts: network=host
 
       - name: Build - Build the base image
-        if: ${{ inputs.build }}
+        # Don't need to build the base image when publish
+        if: ${{ inputs.build && !inputs.publish }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ env.BASE_IMAGE_PATH }}
