@@ -29,6 +29,7 @@ RUN set -ex && \
     mkdir /opt/spark/python && \
     mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
+    chmod g+w /opt/spark/work-dir && \
     touch /opt/spark/RELEASE && \
     chown -R spark:spark /opt/spark && \
     rm /bin/sh && \
@@ -68,6 +69,7 @@ RUN set -ex; \
     mv python/pyspark /opt/spark/python/pyspark/; \
     mv python/lib /opt/spark/python/lib/; \
     mv R /opt/spark/; \
+    chmod a+x /opt/decom.sh; \
     cd ..; \
     rm -rf "$SPARK_TMP";
 
@@ -76,8 +78,5 @@ COPY entrypoint.sh /opt/
 ENV SPARK_HOME /opt/spark
 
 WORKDIR /opt/spark/work-dir
-RUN chmod g+w /opt/spark/work-dir
-RUN chmod a+x /opt/decom.sh
-RUN chmod a+x /opt/entrypoint.sh
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
