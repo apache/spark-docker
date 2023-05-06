@@ -17,8 +17,8 @@
 ARG BASE_IMAGE=spark:3.4.0-scala2.12-java11-ubuntu
 FROM $BASE_IMAGE
 
-RUN set -ex && \
-    apt-get update && \
-    apt install -y python3 python3-pip && \
-    rm -rf /var/cache/apt/* && \
+RUN set -ex; \
+    apt-get update; \
+    apt install -y python3 python3-pip; \
+    rm -rf /var/cache/apt/*; \
     rm -rf /var/lib/apt/lists/*
