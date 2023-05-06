@@ -51,6 +51,20 @@ def parse_opts():
     )
 
     parser.add_argument(
+        "-j",
+        "--java-version",
+        help="The Spark version of Dockerfile.",
+        default="11",
+    )
+
+    parser.add_argument(
+        "-s",
+        "--scala-version",
+        help="The Spark version of Dockerfile.",
+        default="2.12",
+    )
+
+    parser.add_argument(
         "-i",
         "--image",
         help="The base image tag of Dockerfile.",
@@ -88,6 +102,8 @@ def main():
             HAVE_R=opts.sparkr,
             SPARK_VERSION=opts.spark_version,
             SPARK_GPG_KEY=GPG_KEY_DICT.get(opts.spark_version),
+            JAVA_VERSION=opts.java_version,
+            SCALA_VERSION=opts.scala_version,
         )
     )
 

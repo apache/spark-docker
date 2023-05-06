@@ -91,10 +91,12 @@ jobs:
               scala) SUFFIX=ubuntu
                   ;;
           esac
+          BASE_IMGAE_TAG=${{ inputs.spark }}-scala${{ inputs.scala }}-java${{ inputs.java }}-ubuntu
           TAG=scala${{ inputs.scala }}-java${{ inputs.java }}-$SUFFIX
 
           IMAGE_NAME=spark
           IMAGE_PATH=${{ inputs.spark }}/$TAG
+          BASE_IMAGE_PATH=${{ inputs.spark }}/scala${{ inputs.scala }}-java${{ inputs.java }}-ubuntu
           if [ "${{ inputs.build }}" == "true" ]; then
             # Use the local registry to build and test
             REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
@@ -105,6 +107,7 @@ jobs:
             TEST_REPO=${{ inputs.repository }}
             UNIQUE_IMAGE_TAG=${{ inputs.image-tag }}
           fi
+          BASE_IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$BASE_IMGAE_TAG
           IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
           PUBLISH_REPO=${{ inputs.repository }}
@@ -116,8 +119,12 @@ jobs:
           echo "TEST_REPO=${TEST_REPO}" >> $GITHUB_ENV
           # Image name: spark
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          # Base Image Dockerfile: 3.3.0/scala2.12-java11-ubuntu
+          echo "BASE_IMAGE_PATH=${BASE_IMAGE_PATH}" >> $GITHUB_ENV
           # Image dockerfile path: 3.3.0/scala2.12-java11-python3-ubuntu
           echo "IMAGE_PATH=${IMAGE_PATH}" >> $GITHUB_ENV
+          # Base Image URL: spark:3.3.0-scala2.12-java11-ubuntu
+          echo "BASE_IMAGE_URL=${BASE_IMAGE_URL}" >> $GITHUB_ENV
           # Image URL: ghcr.io/apache/spark-docker/spark:3.3.0-scala2.12-java11-python3-ubuntu
           echo "IMAGE_URL=${IMAGE_URL}" >> $GITHUB_ENV
 
@@ -131,6 +138,9 @@ jobs:
           echo "IMAGE_NAME: "${IMAGE_NAME}
           echo "IMAGE_PATH: "${IMAGE_PATH}
           echo "IMAGE_URL: "${IMAGE_URL}
+
+          echo "BASE_IMAGE_PATH: "${BASE_IMAGE_PATH}
+          echo "BASE_IMAGE_URL: "${BASE_IMAGE_URL}
 
           echo "PUBLISH_REPO:"${PUBLISH_REPO}
           echo "PUBLISH_IMAGE_URL:"${PUBLISH_IMAGE_URL}
@@ -146,10 +156,20 @@ jobs:
           # This required by local registry
           driver-opts: network=host
 
+      - name: Build - Build the base image
+        if: ${{ inputs.build }}
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ env.BASE_IMAGE_PATH }}
+          tags: ${{ env.BASE_IMAGE_URL }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+
       - name: Build - Build and push test image
         if: ${{ inputs.build }}
         uses: docker/build-push-action@v3
         with:
+          build-args: BASE_IMAGE=${{ env.BASE_IMAGE_URL }}
           context: ${{ env.IMAGE_PATH }}
           tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
