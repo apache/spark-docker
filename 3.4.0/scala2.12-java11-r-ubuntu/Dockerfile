@@ -17,10 +17,10 @@
 ARG BASE_IMAGE=spark:3.4.0-scala2.12-java11-ubuntu
 FROM $BASE_IMAGE
 
-RUN set -ex && \
-    apt-get update && \
-    apt install -y r-base r-base-dev && \
-    rm -rf /var/cache/apt/* && \
+RUN set -ex; \
+    apt-get update; \
+    apt install -y r-base r-base-dev; \
+    rm -rf /var/cache/apt/*; \
     rm -rf /var/lib/apt/lists/*
 
 ENV R_HOME /usr/lib/R
