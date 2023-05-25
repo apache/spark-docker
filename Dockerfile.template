@@ -79,4 +79,6 @@ ENV SPARK_HOME /opt/spark
 
 WORKDIR /opt/spark/work-dir
 
+USER spark
+
 ENTRYPOINT [ "/opt/entrypoint.sh" ]

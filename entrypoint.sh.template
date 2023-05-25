@@ -68,6 +68,13 @@ elif ! [ -z ${SPARK_HOME+x} ]; then
   SPARK_CLASSPATH="$SPARK_HOME/conf:$SPARK_CLASSPATH";
 fi
 
+# Switch to spark if no USER specified (root by default) otherwise use USER directly
+switch_spark_if_root() {
+  if [ $(id -u) -eq 0 ]; then
+    echo gosu spark
+  fi
+}
+
 case "$1" in
   driver)
     shift 1
@@ -77,6 +84,8 @@ case "$1" in
       --deploy-mode client
       "$@"
     )
+    # Execute the container CMD under tini for better hygiene
+    exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
     ;;
   executor)
     shift 1
@@ -95,20 +104,13 @@ case "$1" in
       --resourceProfileId $SPARK_RESOURCE_PROFILE_ID
       --podName $SPARK_EXECUTOR_POD_NAME
     )
+    # Execute the container CMD under tini for better hygiene
+    exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
     ;;
 
   *)
     # Non-spark-on-k8s command provided, proceeding in pass-through mode...
     CMD=("$@")
+    "${CMD[@]}"
     ;;
 esac
-
-# Switch to spark if no USER specified (root by default) otherwise use USER directly
-switch_spark_if_root() {
-  if [ $(id -u) -eq 0 ]; then
-    echo gosu spark
-  fi
-}
-
-# Execute the container CMD under tini for better hygiene
-exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
