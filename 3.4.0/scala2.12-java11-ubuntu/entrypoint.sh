@@ -38,8 +38,9 @@ if [ -z "$JAVA_HOME" ]; then
 fi
 
 SPARK_CLASSPATH="$SPARK_CLASSPATH:${SPARK_HOME}/jars/*"
-env | grep SPARK_JAVA_OPT_ | sort -t_ -k4 -n | sed 's/[^=]*=\(.*\)/\1/g' > /tmp/java_opts.txt
-readarray -t SPARK_EXECUTOR_JAVA_OPTS < /tmp/java_opts.txt
+for v in "${!SPARK_JAVA_OPT_@}"; do
+    SPARK_EXECUTOR_JAVA_OPTS+=( "${!v}" )
+done
 
 if [ -n "$SPARK_EXTRA_CLASSPATH" ]; then
   SPARK_CLASSPATH="$SPARK_CLASSPATH:$SPARK_EXTRA_CLASSPATH"
