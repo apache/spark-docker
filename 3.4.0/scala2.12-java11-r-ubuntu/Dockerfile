@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG BASE_IMAGE=spark:3.4.0-scala2.12-java11-ubuntu
-FROM $BASE_IMAGE
+FROM spark:3.4.0-scala2.12-java11-ubuntu
 
 RUN set -ex && \
     apt-get update && \
