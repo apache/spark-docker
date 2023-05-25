@@ -165,11 +165,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
 
+      - name: Build - Patch Dockerfile base image
+        working-directory: ${{ env.IMAGE_PATH }}
+        run: |
+          sed -i "s@FROM spark@FROM $TEST_REPO/spark@g" ./Dockerfile
+
       - name: Build - Build and push test image
         if: ${{ inputs.build }}
         uses: docker/build-push-action@v3
         with:
-          build-args: BASE_IMAGE=${{ env.BASE_IMAGE_URL }}
           context: ${{ env.IMAGE_PATH }}
           tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
