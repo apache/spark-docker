@@ -107,6 +107,9 @@ jobs:
             TEST_REPO=${{ inputs.repository }}
             UNIQUE_IMAGE_TAG=${{ inputs.image-tag }}
           fi
+
+          # We can't use the real image for build because we haven't publish the image yet.
+          # The base image for build, it's something like localhost:5000/$REPO_OWNER/spark-docker/spark:3.3.0-scala2.12-java11-ubuntu
           BASE_IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$BASE_IMGAE_TAG
           IMAGE_URL=$TEST_REPO/$IMAGE_NAME:$UNIQUE_IMAGE_TAG
 
@@ -157,7 +160,8 @@ jobs:
           driver-opts: network=host
 
       - name: Build - Build the base image
-        if: ${{ inputs.build }}
+        # Don't need to build the base image when publish
+        if: ${{ inputs.build && !inputs.publish }}
         uses: docker/build-push-action@v3
         with:
           context: ${{ env.BASE_IMAGE_PATH }}
@@ -165,11 +169,24 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
 
+      - name: Build - Use the test image repo when build
+        # Don't need to build the base image when publish
+        if: ${{ inputs.build && !inputs.publish }}
+        working-directory: ${{ env.IMAGE_PATH }}
+        run: |
+          sed -i "s@FROM spark@FROM $TEST_REPO/spark@g" ./Dockerfile
+
+      - name: Build - Use real image repo when publish
+        # Don't need to build the base image when publish
+        if: ${{ inputs.publish }}
+        working-directory: ${{ env.IMAGE_PATH }}
+        run: |
+          sed -i "s@FROM spark@FROM $PUBLISH_REPO/spark@g" ./Dockerfile
+
       - name: Build - Build and push test image
         if: ${{ inputs.build }}
         uses: docker/build-push-action@v3
         with:
-          build-args: BASE_IMAGE=${{ env.BASE_IMAGE_URL }}
           context: ${{ env.IMAGE_PATH }}
           tags: ${{ env.IMAGE_URL }}
           platforms: linux/amd64,linux/arm64
