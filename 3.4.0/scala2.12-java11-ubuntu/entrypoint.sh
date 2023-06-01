@@ -110,7 +110,6 @@ case "$1" in
 
   *)
     # Non-spark-on-k8s command provided, proceeding in pass-through mode...
-    CMD=("$@")
-    "${CMD[@]}"
+    exec "$@"
     ;;
 esac
