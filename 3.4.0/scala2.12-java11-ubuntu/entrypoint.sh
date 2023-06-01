@@ -15,23 +15,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Check whether there is a passwd entry for the container UID
-myuid=$(id -u)
-mygid=$(id -g)
-# turn off -e for getent because it will return error code in anonymous uid case
-set +e
-uidentry=$(getent passwd $myuid)
-set -e
-
-# If there is no passwd entry for the container UID, attempt to create one
-if [ -z "$uidentry" ] ; then
-    if [ -w /etc/passwd ] ; then
-        echo "$myuid:x:$myuid:$mygid:${SPARK_USER_NAME:-anonymous uid}:$SPARK_HOME:/bin/false" >> /etc/passwd
-    else
-        echo "Container ENTRYPOINT failed to add passwd entry for anonymous UID"
-    fi
-fi
+attempt_setup_fake_passwd_entry() {
+  # Check whether there is a passwd entry for the container UID
+  local myuid; myuid="$(id -u)"
+  # If there is no passwd entry for the container UID, attempt to fake one
+  # You can also refer to the https://github.com/docker-library/official-images/pull/13089#issuecomment-1534706523
+  # It's to resolve OpenShift random UID case.
+  # See also: https://github.com/docker-library/postgres/pull/448
+  if ! getent passwd "$myuid" &> /dev/null; then
+      local wrapper
+      for wrapper in {/usr,}/lib{/*,}/libnss_wrapper.so; do
+        if [ -s "$wrapper" ]; then
+          NSS_WRAPPER_PASSWD="$(mktemp)"
+          NSS_WRAPPER_GROUP="$(mktemp)"
+          export LD_PRELOAD="$wrapper" NSS_WRAPPER_PASSWD NSS_WRAPPER_GROUP
+          local mygid; mygid="$(id -g)"
+          printf 'spark:x:%s:%s:${SPARK_USER_NAME:-anonymous uid}:%s:/bin/false\n' "$myuid" "$mygid" "$SPARK_HOME" > "$NSS_WRAPPER_PASSWD"
+          printf 'spark:x:%s:\n' "$mygid" > "$NSS_WRAPPER_GROUP"
+          break
+        fi
+      done
+  fi
+}
 
 if [ -z "$JAVA_HOME" ]; then
   JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | awk '{print $3}')
@@ -85,6 +90,7 @@ case "$1" in
       --deploy-mode client
       "$@"
     )
+    attempt_setup_fake_passwd_entry
     # Execute the container CMD under tini for better hygiene
     exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
     ;;
@@ -105,6 +111,7 @@ case "$1" in
       --resourceProfileId $SPARK_RESOURCE_PROFILE_ID
       --podName $SPARK_EXECUTOR_POD_NAME
     )
+    attempt_setup_fake_passwd_entry
     # Execute the container CMD under tini for better hygiene
     exec $(switch_spark_if_root) /usr/bin/tini -s -- "${CMD[@]}"
     ;;
