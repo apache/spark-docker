@@ -16,6 +16,8 @@
 #
 FROM spark:3.4.0-scala2.12-java11-ubuntu
 
+USER root
+
 RUN set -ex; \
     apt-get update; \
     apt install -y python3 python3-pip; \
@@ -24,3 +26,5 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 
 ENV R_HOME /usr/lib/R
+
+USER spark

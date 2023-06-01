@@ -16,6 +16,8 @@
 #
 FROM spark:{{ SPARK_VERSION }}-scala{{ SCALA_VERSION }}-java{{ JAVA_VERSION }}-ubuntu
 
+USER root
+
 RUN set -ex; \
     apt-get update; \
     {%- if HAVE_PY %}
@@ -30,3 +32,5 @@ RUN set -ex; \
 
 ENV R_HOME /usr/lib/R
 {%- endif %}
+
+USER spark
