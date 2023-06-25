@@ -23,7 +23,6 @@ RUN groupadd --system --gid=${spark_uid} spark && \
 
 RUN set -ex; \
     apt-get update; \
-    ln -s /lib /lib64; \
     apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu libnss-wrapper; \
     mkdir -p /opt/spark; \
     mkdir /opt/spark/python; \
