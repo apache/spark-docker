@@ -30,6 +30,8 @@ GPG_KEY_DICT = {
     "3.3.2": "C56349D886F2B01F8CAE794C653C2301FEA493EE",
     # issuer "xinrong@apache.org"
     "3.4.0": "CC68B3D16FE33A766705160BA7E57908C7A4E1B1",
+    # issuer "dongjoon@apache.org"
+    "3.4.1": "34F0FC5C"
 }
 
 
