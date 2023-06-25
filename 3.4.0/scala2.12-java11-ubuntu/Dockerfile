@@ -24,7 +24,7 @@ RUN groupadd --system --gid=${spark_uid} spark && \
 RUN set -ex; \
     apt-get update; \
     ln -s /lib /lib64; \
-    apt install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu libnss-wrapper; \
+    apt-get install -y gnupg2 wget bash tini libc6 libpam-modules krb5-user libnss3 procps net-tools gosu libnss-wrapper; \
     mkdir -p /opt/spark; \
     mkdir /opt/spark/python; \
     mkdir -p /opt/spark/examples; \
@@ -33,7 +33,6 @@ RUN set -ex; \
     touch /opt/spark/RELEASE; \
     chown -R spark:spark /opt/spark; \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su; \
-    rm -rf /var/cache/apt/*; \
     rm -rf /var/lib/apt/lists/*
 
 # Install Apache Spark
