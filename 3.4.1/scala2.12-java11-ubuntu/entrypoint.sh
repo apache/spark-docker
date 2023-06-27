@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Prevent any errors from being silently ignored
+set -eo pipefail
+
 attempt_setup_fake_passwd_entry() {
   # Check whether there is a passwd entry for the container UID
   local myuid; myuid="$(id -u)"
@@ -51,10 +54,10 @@ if [ -n "$SPARK_EXTRA_CLASSPATH" ]; then
   SPARK_CLASSPATH="$SPARK_CLASSPATH:$SPARK_EXTRA_CLASSPATH"
 fi
 
-if ! [ -z ${PYSPARK_PYTHON+x} ]; then
+if ! [ -z "${PYSPARK_PYTHON+x}" ]; then
     export PYSPARK_PYTHON
 fi
-if ! [ -z ${PYSPARK_DRIVER_PYTHON+x} ]; then
+if ! [ -z "${PYSPARK_DRIVER_PYTHON+x}" ]; then
     export PYSPARK_DRIVER_PYTHON
 fi
 
@@ -64,13 +67,13 @@ if [ -n "${HADOOP_HOME}"  ] && [ -z "${SPARK_DIST_CLASSPATH}"  ]; then
   export SPARK_DIST_CLASSPATH="$($HADOOP_HOME/bin/hadoop classpath)"
 fi
 
-if ! [ -z ${HADOOP_CONF_DIR+x} ]; then
+if ! [ -z "${HADOOP_CONF_DIR+x}" ]; then
   SPARK_CLASSPATH="$HADOOP_CONF_DIR:$SPARK_CLASSPATH";
 fi
 
-if ! [ -z ${SPARK_CONF_DIR+x} ]; then
+if ! [ -z "${SPARK_CONF_DIR+x}" ]; then
   SPARK_CLASSPATH="$SPARK_CONF_DIR:$SPARK_CLASSPATH";
-elif ! [ -z ${SPARK_HOME+x} ]; then
+elif ! [ -z "${SPARK_HOME+x}" ]; then
   SPARK_CLASSPATH="$SPARK_HOME/conf:$SPARK_CLASSPATH";
 fi
 
@@ -99,17 +102,17 @@ case "$1" in
     CMD=(
       ${JAVA_HOME}/bin/java
       "${SPARK_EXECUTOR_JAVA_OPTS[@]}"
-      -Xms$SPARK_EXECUTOR_MEMORY
-      -Xmx$SPARK_EXECUTOR_MEMORY
+      -Xms"$SPARK_EXECUTOR_MEMORY"
+      -Xmx"$SPARK_EXECUTOR_MEMORY"
       -cp "$SPARK_CLASSPATH:$SPARK_DIST_CLASSPATH"
       org.apache.spark.scheduler.cluster.k8s.KubernetesExecutorBackend
-      --driver-url $SPARK_DRIVER_URL
-      --executor-id $SPARK_EXECUTOR_ID
-      --cores $SPARK_EXECUTOR_CORES
-      --app-id $SPARK_APPLICATION_ID
-      --hostname $SPARK_EXECUTOR_POD_IP
-      --resourceProfileId $SPARK_RESOURCE_PROFILE_ID
-      --podName $SPARK_EXECUTOR_POD_NAME
+      --driver-url "$SPARK_DRIVER_URL"
+      --executor-id "$SPARK_EXECUTOR_ID"
+      --cores "$SPARK_EXECUTOR_CORES"
+      --app-id "$SPARK_APPLICATION_ID"
+      --hostname "$SPARK_EXECUTOR_POD_IP"
+      --resourceProfileId "$SPARK_RESOURCE_PROFILE_ID"
+      --podName "$SPARK_EXECUTOR_POD_NAME"
     )
     attempt_setup_fake_passwd_entry
     # Execute the container CMD under tini for better hygiene
