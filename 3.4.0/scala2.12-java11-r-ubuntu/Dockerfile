@@ -20,8 +20,7 @@ USER root
 
 RUN set -ex; \
     apt-get update; \
-    apt install -y r-base r-base-dev; \
-    rm -rf /var/cache/apt/*; \
+    apt-get install -y r-base r-base-dev; \
     rm -rf /var/lib/apt/lists/*
 
 ENV R_HOME /usr/lib/R
