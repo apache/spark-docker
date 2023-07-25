@@ -22,8 +22,16 @@
       "path": "3.4.1/scala2.12-java11-ubuntu",
       "tags": [
         "3.4.1-scala2.12-java11-ubuntu",
-        "3.4.1-scala",
-        "scala"
+        "3.4.1-scala2.12",
+        "scala2.12"
+      ]
+    },
+    {
+      "path": "3.4.1/scala2.13-java11-ubuntu",
+      "tags": [
+        "3.4.1-scala2.13-java11-ubuntu",
+        "3.4.1-scala2.13",
+        "scala2.13"
       ]
     },
     {

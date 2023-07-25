@@ -33,6 +33,7 @@ scala2.12-java11-python3-r-ubuntu
 scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
+scala2.13-java11-ubuntu
 "
 
 for TAG in $TAGS; do
@@ -45,11 +46,15 @@ for TAG in $TAGS; do
         OPTS+=" --sparkr"
     fi
 
+    if echo $TAG | grep -q "scala2.13"; then
+        OPTS+=" --scala-version 2.13"
+    fi
+
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.13-java11-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh

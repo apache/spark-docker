@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM {{ BASE_IMAGE }}
+FROM eclipse-temurin:11-jre-focal
 
 ARG spark_uid=185
 
@@ -36,12 +36,12 @@ RUN set -ex; \
 
 # Install Apache Spark
 # https://downloads.apache.org/spark/KEYS
-ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin- \
-    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin- \
-    GPG_KEY={{ SPARK_GPG_KEY }}
+ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin- \
+    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin- \
+    GPG_KEY=F28C9C925C188C35E345614DEDA00CE834F0FC5C
 
 RUN set -ex; \
-    if [ "{{ SCALA_VERSION }}" = "2.13" ]; then export BIN_FILE_SUFFIX="hadoop3-scala2.13.tgz"; else export BIN_FILE_SUFFIX="hadoop3.tgz"; fi; \
+    if [ "2.13" = "2.13" ]; then export BIN_FILE_SUFFIX="hadoop3-scala2.13.tgz"; else export BIN_FILE_SUFFIX="hadoop3.tgz"; fi; \
     export SPARK_TMP="$(mktemp -d)"; \
     cd $SPARK_TMP; \
     wget -nv -O spark.tgz "${SPARK_TGZ_URL}${BIN_FILE_SUFFIX}"; \
