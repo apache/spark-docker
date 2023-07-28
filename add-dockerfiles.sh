@@ -34,6 +34,9 @@ scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
 scala2.13-java11-ubuntu
+scala2.13-java11-r-ubuntu
+scala2.13-java11-python3-ubuntu
+scala2.13-java11-python3-r-ubuntu
 "
 
 for TAG in $TAGS; do

@@ -11,11 +11,23 @@
       ]
     },
     {
+      "path": "3.4.1/scala2.13-java11-python3-ubuntu",
+      "tags": [
+        "3.4.1-scala2.13-java11-python3-ubuntu"
+      ]
+    },
+    {
       "path": "3.4.1/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.4.1-scala2.12-java11-r-ubuntu",
         "3.4.1-r",
         "r"
+      ]
+    },
+    {
+      "path": "3.4.1/scala2.13-java11-r-ubuntu",
+      "tags": [
+        "3.4.1-scala2.13-java11-r-ubuntu"
       ]
     },
     {
@@ -40,6 +52,12 @@
       "path": "3.4.1/scala2.12-java11-python3-r-ubuntu",
       "tags": [
         "3.4.1-scala2.12-java11-python3-r-ubuntu"
+      ]
+    },
+    {
+      "path": "3.4.1/scala2.13-java11-python3-r-ubuntu",
+      "tags": [
+        "3.4.1-scala2.13-java11-python3-r-ubuntu"
       ]
     },
     {
