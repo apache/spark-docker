@@ -23,7 +23,9 @@
       "tags": [
         "3.4.1-scala2.12-java11-ubuntu",
         "3.4.1-scala2.12",
-        "scala2.12"
+        "scala2.12",
+        "3.4.1-scala",
+        "scala"
       ]
     },
     {
