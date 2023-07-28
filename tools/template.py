@@ -93,6 +93,11 @@ def parse_opts():
     return args
 
 
+def uri_suffix(scala_version):
+    bin_file_suffix = "hadoop3-scala2.13.tgz" if scala_version == "2.13" else "hadoop3.tgz"
+    return bin_file_suffix
+
+
 def main():
     opts = parse_opts()
     env = Environment(loader=FileSystemLoader("./"))
@@ -106,6 +111,7 @@ def main():
             SPARK_GPG_KEY=GPG_KEY_DICT.get(opts.spark_version),
             JAVA_VERSION=opts.java_version,
             SCALA_VERSION=opts.scala_version,
+            BIN_FILE_SUFFIX=uri_suffix(opts.scala_version)
         )
     )
 

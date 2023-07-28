@@ -36,16 +36,15 @@ RUN set -ex; \
 
 # Install Apache Spark
 # https://downloads.apache.org/spark/KEYS
-ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin- \
-    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin- \
+ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin-{{ BIN_FILE_SUFFIX }} \
+    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-{{ SPARK_VERSION }}/spark-{{ SPARK_VERSION }}-bin-{{ BIN_FILE_SUFFIX }}.asc \
     GPG_KEY={{ SPARK_GPG_KEY }}
 
 RUN set -ex; \
-    if [ "{{ SCALA_VERSION }}" = "2.13" ]; then export BIN_FILE_SUFFIX="hadoop3-scala2.13.tgz"; else export BIN_FILE_SUFFIX="hadoop3.tgz"; fi; \
     export SPARK_TMP="$(mktemp -d)"; \
     cd $SPARK_TMP; \
-    wget -nv -O spark.tgz "${SPARK_TGZ_URL}${BIN_FILE_SUFFIX}"; \
-    wget -nv -O spark.tgz.asc "${SPARK_TGZ_ASC_URL}${BIN_FILE_SUFFIX}.asc"; \
+    wget -nv -O spark.tgz "${SPARK_TGZ_URL}"; \
+    wget -nv -O spark.tgz.asc "${SPARK_TGZ_ASC_URL}"; \
     export GNUPGHOME="$(mktemp -d)"; \
     gpg --batch --keyserver hkps://keys.openpgp.org --recv-key "$GPG_KEY" || \
     gpg --batch --keyserver hkps://keyserver.ubuntu.com --recv-keys "$GPG_KEY"; \
