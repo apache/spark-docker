@@ -50,7 +50,7 @@ RUN set -ex; \
     wget -nv -O spark.tgz "$SPARK_TGZ_URL"; \
     wget -nv -O spark.tgz.asc "$SPARK_TGZ_ASC_URL"; \
     export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver hkps://keys.openpgp.org --recv-key "$GPG_KEY" || \
+    # gpg --keyserver hkps://keys.openpgp.org --recv-key "$GPG_KEY" || \
     gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$GPG_KEY"; \
     gpg --batch --verify spark.tgz.asc spark.tgz; \
     gpgconf --kill all; \
