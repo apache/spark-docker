@@ -28,6 +28,8 @@ GPG_KEY_DICT = {
     "3.3.1": "86727D43E73A415F67A0B1A14E68B3E6CD473653",
     # issuer "viirya@apache.org"
     "3.3.2": "C56349D886F2B01F8CAE794C653C2301FEA493EE",
+    # issuer "yumwang@apache.org"
+    "3.3.3": "F6468A4FF8377B4F1C07BC2AA077F928A0BF68D8",
     # issuer "xinrong@apache.org"
     "3.4.0": "CC68B3D16FE33A766705160BA7E57908C7A4E1B1",
     # issuer "dongjoon@apache.org"
