@@ -25,6 +25,8 @@ on:
       - 'master'
     paths:
       - '3.3.3/**'
+      - '.github/workflows/build_3.3.3.yaml'
+      - '.github/workflows/main.yml'
 
 jobs:
   run-build:

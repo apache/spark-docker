@@ -36,8 +36,8 @@ RUN set -ex; \
 
 # Install Apache Spark
 # https://downloads.apache.org/spark/KEYS
-ENV SPARK_TGZ_URL=https://dist.apache.org/repos/dist/dev/spark/v3.5.0-rc5-bin/spark-3.5.0-bin-hadoop3.tgz \
-    SPARK_TGZ_ASC_URL=https://dist.apache.org/repos/dist/dev/spark/v3.5.0-rc5-bin/spark-3.5.0-bin-hadoop3.tgz.asc \
+ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz \
+    SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz.asc \
     GPG_KEY=FC3AE3A7EAA1BAC98770840E7E1ABCC53AAA2216
 
 RUN set -ex; \
