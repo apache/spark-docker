@@ -31,11 +31,12 @@ jobs:
     strategy:
       matrix:
         image-type: ["all", "python", "scala", "r"]
+        java: [11, 17]
     name: Run
     secrets: inherit
     uses: ./.github/workflows/main.yml
     with:
       spark: 3.5.0
       scala: 2.12
-      java: 11
+      java: ${{ matrix.java }}
       image-type: ${{ matrix.image-type }}

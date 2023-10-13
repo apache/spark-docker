@@ -26,13 +26,17 @@
 # - Add 3.3.1 dockerfiles:
 #   $ ./add-dockerfiles.sh 3.3.1
 
-VERSION=${1:-"3.3.0"}
+VERSION=${1:-"3.5.0"}
 
 TAGS="
 scala2.12-java11-python3-r-ubuntu
 scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
+scala2.12-java17-python3-r-ubuntu
+scala2.12-java17-python3-ubuntu
+scala2.12-java17-r-ubuntu
+scala2.12-java17-ubuntu
 "
 
 for TAG in $TAGS; do
@@ -44,12 +48,18 @@ for TAG in $TAGS; do
     if echo $TAG | grep -q "r-"; then
         OPTS+=" --sparkr"
     fi
-
+    
+    if echo $TAG | grep -q "java17"; then
+        OPTS+=" --java-version 17 --image eclipse-temurin:17-jre-jammy"
+    elif echo $TAG | grep -q "java11"; then
+        OPTS+=" --java-version 11 --image eclipse-temurin:11-jre-focal"
+    fi 
+    
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh
