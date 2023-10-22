@@ -61,7 +61,7 @@ function remove_network() {
 
 # Find and kill any remaining containers attached to the network
 function cleanup() {
-  local containers 
+  local containers
   containers="$(docker ps --quiet --filter network="$NETWORK_NAME")"
 
   if [ -n "$containers" ]; then
