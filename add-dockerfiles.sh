@@ -33,11 +33,17 @@ scala2.12-java11-python3-r-ubuntu
 scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
-scala2.12-java17-python3-r-ubuntu
-scala2.12-java17-python3-ubuntu
-scala2.12-java17-r-ubuntu
-scala2.12-java17-ubuntu
 "
+
+# java17 images were added in 3.5.0. We need to skip java17 for 3.3.x and 3.4.x
+if ! echo $VERSION | grep -Eq "^3.3|^3.4"; then
+   TAGS+="
+   scala2.12-java17-python3-r-ubuntu
+   scala2.12-java17-python3-ubuntu
+   scala2.12-java17-r-ubuntu
+   scala2.12-java17-ubuntu
+   "
+fi
 
 for TAG in $TAGS; do
     OPTS=""
@@ -66,4 +72,5 @@ for TAG in $TAGS; do
     else
         python3 tools/template.py $OPTS -f r-python.template > $VERSION/$TAG/Dockerfile
     fi
+
 done
