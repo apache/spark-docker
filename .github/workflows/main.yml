@@ -79,6 +79,14 @@ jobs:
       - name: Checkout Spark Docker repository
         uses: actions/checkout@v3
 
+      - name: Free up disk space
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          chmod +x tools/ci_runner_cleaner/free_disk_space_container.sh
+          tools/ci_runner_cleaner/free_disk_space_container.sh
+          chmod +x tools/ci_runner_cleaner/free_disk_space.sh
+          tools/ci_runner_cleaner/free_disk_space.sh
+
       - name: Prepare - Generate tags
         run: |
           case "${{ inputs.image-type }}" in
@@ -195,13 +203,22 @@ jobs:
       - name : Test - Run spark application for standalone cluster on docker
         run: testing/run_tests.sh --image-url $IMAGE_URL --scala-version ${{ inputs.scala }} --spark-version ${{ inputs.spark }}
 
-      - name: Test - Checkout Spark repository
+      - name: Test - Checkout Spark repository for Spark 3.3.0 (with fetch-depth 0)
+        if: inputs.spark == '3.3.0'
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           repository: apache/spark
           ref: v${{ inputs.spark }}
           path: ${{ github.workspace }}/spark
+
+      - name: Test - Checkout Spark repository 
+        if: inputs.spark != '3.3.0'
+        uses: actions/checkout@v3
+        with:
+          repository: apache/spark
+          ref: v${{ inputs.spark }}
+          path: ${{ github.workspace }}/spark 
 
       - name: Test - Cherry pick commits
         # Apache Spark enable resource limited k8s IT since v3.3.1, cherry-pick patches for old release
@@ -247,6 +264,7 @@ jobs:
           # TODO(SPARK-44495): Resume to use the latest minikube for k8s-integration-tests.
           curl -LO https://storage.googleapis.com/minikube/releases/v1.30.1/minikube-linux-amd64
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
+          rm minikube-linux-amd64
           # Github Action limit cpu:2, memory: 6947MB, limit to 2U6G for better resource statistic
           minikube start --cpus 2 --memory 6144
 

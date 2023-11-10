@@ -59,7 +59,7 @@ def parse_opts():
     parser.add_argument(
         "-j",
         "--java-version",
-        help="The Spark version of Dockerfile.",
+        help="Java version of Dockerfile.",
         default="11",
     )
 

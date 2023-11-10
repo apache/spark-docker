@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         scala: [2.12]
-        java: [11]
+        java: [11, 17]
         image-type: ["scala"]
     permissions:
       packages: write
@@ -80,7 +80,7 @@ jobs:
     strategy:
       matrix:
         scala: [2.12]
-        java: [11]
+        java: [11, 17]
         image-type: ["all", "python", "r"]
     permissions:
       packages: write

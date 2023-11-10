@@ -40,6 +40,9 @@ on:
         default: 11
         type: string
         required: true
+        options:
+        - 11
+        - 17
       scala:
         description: 'The Scala version of Spark image.'
         default: 2.12

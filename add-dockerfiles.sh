@@ -26,7 +26,7 @@
 # - Add 3.3.1 dockerfiles:
 #   $ ./add-dockerfiles.sh 3.3.1
 
-VERSION=${1:-"3.3.0"}
+VERSION=${1:-"3.5.0"}
 
 TAGS="
 scala2.12-java11-python3-r-ubuntu
@@ -34,6 +34,16 @@ scala2.12-java11-python3-ubuntu
 scala2.12-java11-r-ubuntu
 scala2.12-java11-ubuntu
 "
+
+# java17 images were added in 3.5.0. We need to skip java17 for 3.3.x and 3.4.x
+if ! echo $VERSION | grep -Eq "^3.3|^3.4"; then
+   TAGS+="
+   scala2.12-java17-python3-r-ubuntu
+   scala2.12-java17-python3-ubuntu
+   scala2.12-java17-r-ubuntu
+   scala2.12-java17-ubuntu
+   "
+fi
 
 for TAG in $TAGS; do
     OPTS=""
@@ -44,16 +54,23 @@ for TAG in $TAGS; do
     if echo $TAG | grep -q "r-"; then
         OPTS+=" --sparkr"
     fi
-
+    
+    if echo $TAG | grep -q "java17"; then
+        OPTS+=" --java-version 17 --image eclipse-temurin:17-jre-jammy"
+    elif echo $TAG | grep -q "java11"; then
+        OPTS+=" --java-version 11 --image eclipse-temurin:11-jre-focal"
+    fi 
+    
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh
     else
         python3 tools/template.py $OPTS -f r-python.template > $VERSION/$TAG/Dockerfile
     fi
+
 done
