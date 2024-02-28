@@ -25,10 +25,10 @@ on:
       spark:
         description: 'The Spark version of Spark image.'
         required: true
-        default: '3.5.0'
+        default: '3.5.1'
         type: choice
         options:
-        - 3.5.0
+        - 3.5.1
       publish:
         description: 'Publish the image or not.'
         default: false
