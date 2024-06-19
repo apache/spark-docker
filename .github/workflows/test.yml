@@ -28,6 +28,7 @@ on:
         default: '3.5.1'
         type: choice
         options:
+        - 4.0.0-preview1
         - 3.5.1
         - 3.5.0
         - 3.4.2
@@ -50,6 +51,9 @@ on:
         default: 2.12
         type: string
         required: true
+        options:
+        - 2.12
+        - 2.13
       image-type:
         description: 'The image type of Spark image.'
         required: true
