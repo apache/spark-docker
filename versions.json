@@ -4,8 +4,7 @@
       "path": "4.0.0-preview1/scala2.13-java17-python3-ubuntu",
       "tags": [
         "4.0.0-preview1-scala2.13-java17-python3-ubuntu",
-        "4.0.0-preview1-python3",
-        "4.0.0-preview1"
+        "4.0.0-preview1-python3"
       ]
     },
     {
@@ -25,7 +24,8 @@
     {
       "path": "4.0.0-preview1/scala2.13-java17-python3-r-ubuntu",
       "tags": [
-        "4.0.0-preview1-scala2.13-java17-python3-r-ubuntu"
+        "4.0.0-preview1-scala2.13-java17-python3-r-ubuntu",
+        "4.0.0-preview1"
       ]
     },
     {
