@@ -28,21 +28,31 @@
 
 VERSION=${1:-"3.5.0"}
 
-TAGS="
-scala2.12-java11-python3-r-ubuntu
-scala2.12-java11-python3-ubuntu
-scala2.12-java11-r-ubuntu
-scala2.12-java11-ubuntu
-"
-
-# java17 images were added in 3.5.0. We need to skip java17 for 3.3.x and 3.4.x
-if ! echo $VERSION | grep -Eq "^3.3|^3.4"; then
-   TAGS+="
-   scala2.12-java17-python3-r-ubuntu
-   scala2.12-java17-python3-ubuntu
-   scala2.12-java17-r-ubuntu
-   scala2.12-java17-ubuntu
-   "
+if echo $VERSION | grep -Eq "^4."; then
+    # 4.x default
+    TAGS="
+    scala2.13-java17-python3-r-ubuntu
+    scala2.13-java17-python3-ubuntu
+    scala2.13-java17-r-ubuntu
+    scala2.13-java17-ubuntu
+    "
+elif echo $VERSION | grep -Eq "^3."; then
+    # 3.x default
+    TAGS="
+    scala2.12-java11-python3-r-ubuntu
+    scala2.12-java11-python3-ubuntu
+    scala2.12-java11-r-ubuntu
+    scala2.12-java11-ubuntu
+    "
+    # java17 images were added in 3.5.0. We need to skip java17 for 3.3.x and 3.4.x
+    if ! echo $VERSION | grep -Eq "^3.3|^3.4"; then
+        TAGS+="
+        scala2.12-java17-python3-r-ubuntu
+        scala2.12-java17-python3-ubuntu
+        scala2.12-java17-r-ubuntu
+        scala2.12-java17-ubuntu
+        "
+    fi
 fi
 
 for TAG in $TAGS; do
@@ -55,17 +65,23 @@ for TAG in $TAGS; do
         OPTS+=" --sparkr"
     fi
     
+    if echo $TAG | grep -q "scala2.12"; then
+        OPTS+=" --scala-version 2.12"
+    elif echo $TAG | grep -q "scala2.13"; then
+        OPTS+=" --scala-version 2.13"
+    fi
+
     if echo $TAG | grep -q "java17"; then
         OPTS+=" --java-version 17 --image eclipse-temurin:17-jre-jammy"
     elif echo $TAG | grep -q "java11"; then
         OPTS+=" --java-version 11 --image eclipse-temurin:11-jre-focal"
-    fi 
+    fi
     
     OPTS+=" --spark-version $VERSION"
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java17-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh
