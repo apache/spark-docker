@@ -94,8 +94,7 @@
       "tags": [
         "3.5.1-scala2.12-java17-python3-ubuntu",
         "3.5.1-java17-python3",
-        "3.5.1-java17",
-        "python3-java17"
+        "3.5.1-java17"
       ]
     },
     {
@@ -123,24 +122,21 @@
       "tags": [
         "3.5.1-scala2.12-java11-python3-ubuntu",
         "3.5.1-python3",
-        "3.5.1",
-        "python3"
+        "3.5.1"
       ]
     },
     {
       "path": "3.5.1/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.5.1-scala2.12-java11-r-ubuntu",
-        "3.5.1-r",
-        "r"
+        "3.5.1-r"
       ]
     },
     {
       "path": "3.5.1/scala2.12-java11-ubuntu",
       "tags": [
         "3.5.1-scala2.12-java11-ubuntu",
-        "3.5.1-scala",
-        "scala"
+        "3.5.1-scala"
       ]
     },
     {
