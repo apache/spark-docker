@@ -40,6 +40,8 @@ GPG_KEY_DICT = {
     "3.5.0": "FC3AE3A7EAA1BAC98770840E7E1ABCC53AAA2216",
     # issuer "kabhwan@apache.org"
     "3.5.1": "FD3E84942E5E6106235A1D25BD356A9F8740E4FF",
+    # issuer "yao@apache.org"
+    "3.5.2": "D76E23B9F11B5BF6864613C4F7051850A0AF904D",
     # issuer "wenchen@apache.org"
     "4.0.0-preview1": "4DC9676CEF9A83E98FCA02784D6620843CD87F5A"
 }
