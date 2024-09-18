@@ -55,6 +55,7 @@ RUN set -ex; \
     tar -xf spark.tgz --strip-components=1; \
     chown -R spark:spark .; \
     mv jars /opt/spark/; \
+    mv RELEASE /opt/spark/; \
     mv bin /opt/spark/; \
     mv sbin /opt/spark/; \
     mv kubernetes/dockerfiles/spark/decom.sh /opt/; \
