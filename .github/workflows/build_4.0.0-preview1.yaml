@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         image-type: ["all", "python", "scala", "r"]
-        java: [17]
+        java: [17, 21]
     name: Run
     secrets: inherit
     uses: ./.github/workflows/main.yml
