@@ -35,6 +35,10 @@ if echo $VERSION | grep -Eq "^4."; then
     scala2.13-java17-python3-ubuntu
     scala2.13-java17-r-ubuntu
     scala2.13-java17-ubuntu
+    scala2.13-java21-python3-r-ubuntu
+    scala2.13-java21-python3-ubuntu
+    scala2.13-java21-r-ubuntu
+    scala2.13-java21-ubuntu
     "
 elif echo $VERSION | grep -Eq "^3."; then
     # 3.x default
@@ -71,7 +75,9 @@ for TAG in $TAGS; do
         OPTS+=" --scala-version 2.13"
     fi
 
-    if echo $TAG | grep -q "java17"; then
+    if echo $TAG | grep -q "java21"; then
+        OPTS+=" --java-version 21 --image eclipse-temurin:21-jammy"
+    elif echo $TAG | grep -q "java17"; then
         OPTS+=" --java-version 17 --image eclipse-temurin:17-jammy"
     elif echo $TAG | grep -q "java11"; then
         OPTS+=" --java-version 11 --image eclipse-temurin:11-jre-focal"
@@ -81,7 +87,7 @@ for TAG in $TAGS; do
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java17-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java21-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh

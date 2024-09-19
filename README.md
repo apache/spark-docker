@@ -35,7 +35,7 @@ You can see [3.4.0 PR](https://github.com/apache/spark-docker/pull/33) as refere
 
 ### Step 2. Publish apache/spark Images.
 
-Click [Publish (Java 17 only)](https://github.com/apache/spark-docker/actions/workflows/publish-java17.yaml) (such as 4.x) or [Publish](https://github.com/apache/spark-docker/actions/workflows/publish.yml) (such as 3.x) to publish images.
+Click [Publish (Java 21 only)](https://github.com/apache/spark-docker/actions/workflows/publish-java21.yaml), [Publish (Java 17 only)](https://github.com/apache/spark-docker/actions/workflows/publish-java17.yaml) (such as 4.x) or [Publish](https://github.com/apache/spark-docker/actions/workflows/publish.yml) (such as 3.x) to publish images.
 
 After this, the [apache/spark](https://hub.docker.com/r/apache/spark) docker images will be published.
 
