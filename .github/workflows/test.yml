@@ -28,6 +28,7 @@ on:
         default: '3.5.2'
         type: choice
         options:
+        - 4.0.0-preview2
         - 4.0.0-preview1
         - 3.5.2
         - 3.5.1
