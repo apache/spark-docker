@@ -25,10 +25,11 @@ on:
       spark:
         description: 'The Spark version of Spark image.'
         required: true
-        default: '4.0.0-preview1'
+        default: '4.0.0-preview2'
         type: choice
         options:
         - 4.0.0-preview1
+        - 4.0.0-preview2
       publish:
         description: 'Publish the image or not.'
         default: false
