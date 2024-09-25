@@ -45,7 +45,7 @@ GPG_KEY_DICT = {
     # issuer "yao@apache.org"
     "3.5.2": "D76E23B9F11B5BF6864613C4F7051850A0AF904D",
     # issuer "haejoon@apache.org"
-    "3.5.2": "0A2D660358B6F6F8071FD16F6606986CF5A8447C",
+    "3.5.3": "0A2D660358B6F6F8071FD16F6606986CF5A8447C",
     # issuer "wenchen@apache.org"
     "4.0.0-preview1": "4DC9676CEF9A83E98FCA02784D6620843CD87F5A",
     # issuer "dongjoon@apache.org"
