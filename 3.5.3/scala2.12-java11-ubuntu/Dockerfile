@@ -38,7 +38,7 @@ RUN set -ex; \
 # https://downloads.apache.org/spark/KEYS
 ENV SPARK_TGZ_URL=https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz \
     SPARK_TGZ_ASC_URL=https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz.asc \
-    GPG_KEY=None
+    GPG_KEY=0A2D660358B6F6F8071FD16F6606986CF5A8447C
 
 RUN set -ex; \
     export SPARK_TMP="$(mktemp -d)"; \
