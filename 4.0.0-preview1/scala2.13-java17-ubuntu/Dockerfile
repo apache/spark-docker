@@ -60,8 +60,7 @@ RUN set -ex; \
     mv sbin /opt/spark/; \
     mv kubernetes/dockerfiles/spark/decom.sh /opt/; \
     mv examples /opt/spark/; \
-    ln -s "$(basename $(ls /opt/spark/examples/jars/spark-examples_*.jar))" /opt/spark/examples/jars/spark-examples.jar; \
-    mv kubernetes/tests /opt/spark/; \
+    ln -s "$(basename /opt/spark/examples/jars/spark-examples_*.jar)" /opt/spark/examples/jars/spark-examples.jar; \    mv kubernetes/tests /opt/spark/; \
     mv data /opt/spark/; \
     mv python/pyspark /opt/spark/python/pyspark/; \
     mv python/lib /opt/spark/python/lib/; \
