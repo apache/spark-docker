@@ -342,6 +342,34 @@
       ]
     },
     {
+      "path": "3.4.4/scala2.12-java11-python3-ubuntu",
+      "tags": [
+        "3.4.4-scala2.12-java11-python3-ubuntu",
+        "3.4.4-python3",
+        "3.4.4"
+      ]
+    },
+    {
+      "path": "3.4.4/scala2.12-java11-r-ubuntu",
+      "tags": [
+        "3.4.4-scala2.12-java11-r-ubuntu",
+        "3.4.4-r"
+      ]
+    },
+    {
+      "path": "3.4.4/scala2.12-java11-ubuntu",
+      "tags": [
+        "3.4.4-scala2.12-java11-ubuntu",
+        "3.4.4-scala"
+      ]
+    },
+    {
+      "path": "3.4.4/scala2.12-java11-python3-r-ubuntu",
+      "tags": [
+        "3.4.4-scala2.12-java11-python3-r-ubuntu"
+      ]
+    },
+    {
       "path": "3.4.3/scala2.12-java11-python3-ubuntu",
       "tags": [
         "3.4.3-scala2.12-java11-python3-ubuntu",
