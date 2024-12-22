@@ -257,11 +257,6 @@ jobs:
           path: ~/.cache/coursier
           key: build-${{ inputs.spark }}-scala${{ inputs.scala }}-java${{ inputs.java }}-coursier
 
-      - name: Install R
-        run: |
-            sudo apt update
-            sudo apt-get install r-base
-
       - name: Test - Start minikube
         run: |
           # See more in "Installation" https://minikube.sigs.k8s.io/docs/start/
