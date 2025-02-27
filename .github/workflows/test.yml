@@ -25,11 +25,12 @@ on:
       spark:
         description: 'The Spark version of Spark image.'
         required: true
-        default: '3.5.4'
+        default: '3.5.5'
         type: choice
         options:
         - 4.0.0-preview2
         - 4.0.0-preview1
+        - 3.5.5
         - 3.5.4
         - 3.5.3
         - 3.5.2

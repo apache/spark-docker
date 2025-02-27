@@ -158,7 +158,10 @@ jobs:
 
       - name: Build - Set up QEMU
         if: ${{ inputs.build }}
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
+        with:
+          ## Temporary due to bug in qemu:  https://github.com/docker/setup-qemu-action/issues/198
+          image: tonistiigi/binfmt:qemu-v7.0.0-28
 
       - name: Build - Set up Docker Buildx
         if: ${{ inputs.build }}
