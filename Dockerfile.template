@@ -72,7 +72,7 @@ RUN set -ex; \
 
 COPY entrypoint.sh /opt/
 
-ENV SPARK_HOME /opt/spark
+ENV SPARK_HOME=/opt/spark
 
 WORKDIR /opt/spark/work-dir
 

@@ -29,7 +29,7 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 {%- if HAVE_R %}
 
-ENV R_HOME /usr/lib/R
+ENV R_HOME=/usr/lib/R
 {%- endif %}
 
 USER spark
