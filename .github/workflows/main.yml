@@ -323,7 +323,7 @@ jobs:
 
       - name: Test - Upload Spark on K8S integration tests log files
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: spark-on-kubernetes-it-log
           path: "**/target/integration-tests.log"
