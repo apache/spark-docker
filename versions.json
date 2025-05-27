@@ -174,6 +174,67 @@
       ]
     },
     {
+      "path": "3.5.6/scala2.12-java17-python3-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java17-python3-ubuntu",
+        "3.5.6-java17-python3",
+        "3.5.6-java17",
+        "python3-java17"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java17-r-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java17-r-ubuntu",
+        "3.5.6-java17-r"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java17-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java17-ubuntu",
+        "3.5.6-java17-scala"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java17-python3-r-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java17-python3-r-ubuntu"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java11-python3-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java11-python3-ubuntu",
+        "3.5.6-python3",
+        "3.5.6",
+        "python3",
+        "latest"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java11-r-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java11-r-ubuntu",
+        "3.5.6-r",
+        "r"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java11-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java11-ubuntu",
+        "3.5.6-scala",
+        "scala"
+      ]
+    },
+    {
+      "path": "3.5.6/scala2.12-java11-python3-r-ubuntu",
+      "tags": [
+        "3.5.6-scala2.12-java11-python3-r-ubuntu"
+      ]
+    },
+    {
       "path": "3.5.5/scala2.12-java17-python3-ubuntu",
       "tags": [
         "3.5.5-scala2.12-java17-python3-ubuntu",
