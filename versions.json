@@ -5,7 +5,9 @@
       "tags": [
         "4.0.0-scala2.13-java21-python3-ubuntu",
         "4.0.0-java21-python3",
-        "4.0.0-java21"
+        "4.0.0-java21",
+        "python3",
+        "latest"
       ]
     },
     {
@@ -33,21 +35,24 @@
       "tags": [
         "4.0.0-scala2.13-java17-python3-ubuntu",
         "4.0.0-python3",
-        "4.0.0"
+        "4.0.0",
+        "python3-java17"
       ]
     },
     {
       "path": "4.0.0/scala2.13-java17-r-ubuntu",
       "tags": [
         "4.0.0-scala2.13-java17-r-ubuntu",
-        "4.0.0-r"
+        "4.0.0-r",
+        "r"
       ]
     },
     {
       "path": "4.0.0/scala2.13-java17-ubuntu",
       "tags": [
         "4.0.0-scala2.13-java17-ubuntu",
-        "4.0.0-scala"
+        "4.0.0-scala",
+        "scala"
       ]
     },
     {
@@ -173,8 +178,7 @@
       "tags": [
         "3.5.5-scala2.12-java17-python3-ubuntu",
         "3.5.5-java17-python3",
-        "3.5.5-java17",
-        "python3-java17"
+        "3.5.5-java17"
       ]
     },
     {
@@ -202,25 +206,21 @@
       "tags": [
         "3.5.5-scala2.12-java11-python3-ubuntu",
         "3.5.5-python3",
-        "3.5.5",
-        "python3",
-        "latest"
+        "3.5.5"
       ]
     },
     {
       "path": "3.5.5/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.5.5-scala2.12-java11-r-ubuntu",
-        "3.5.5-r",
-        "r"
+        "3.5.5-r"
       ]
     },
     {
       "path": "3.5.5/scala2.12-java11-ubuntu",
       "tags": [
         "3.5.5-scala2.12-java11-ubuntu",
-        "3.5.5-scala",
-        "scala"
+        "3.5.5-scala"
       ]
     },
     {
