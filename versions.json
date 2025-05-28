@@ -206,21 +206,21 @@
       "tags": [
         "3.5.6-scala2.12-java11-python3-ubuntu",
         "3.5.6-python3",
-        "3.5.6",
+        "3.5.6"
       ]
     },
     {
       "path": "3.5.6/scala2.12-java11-r-ubuntu",
       "tags": [
         "3.5.6-scala2.12-java11-r-ubuntu",
-        "3.5.6-r",
+        "3.5.6-r"
       ]
     },
     {
       "path": "3.5.6/scala2.12-java11-ubuntu",
       "tags": [
         "3.5.6-scala2.12-java11-ubuntu",
-        "3.5.6-scala",
+        "3.5.6-scala"
       ]
     },
     {
