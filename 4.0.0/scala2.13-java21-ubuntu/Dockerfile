@@ -19,7 +19,7 @@ FROM eclipse-temurin:21-jammy
 ARG spark_uid=185
 
 RUN groupadd --system --gid=${spark_uid} spark && \
-    useradd --system --uid=${spark_uid} --gid=spark spark
+    useradd --system --uid=${spark_uid} --gid=spark -d /nonexistent spark
 
 RUN set -ex; \
     apt-get update; \
