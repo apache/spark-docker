@@ -60,6 +60,8 @@ GPG_KEY_DICT = {
     "4.0.0-preview2": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "wenchen@apache.org"
     "4.0.0": "4DC9676CEF9A83E98FCA02784D6620843CD87F5A",
+    # issuer "dongjoon@apache.org"
+    "4.0.1": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "gurwls223@apache.org"
     "4.1.0-preview1": "0FE4571297AB84440673665669600C8338F65970"
 }
