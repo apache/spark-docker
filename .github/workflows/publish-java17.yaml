@@ -29,9 +29,7 @@ on:
         type: choice
         options:
         - 4.1.0-preview1
-        - 4.0.0
-        - 4.0.0-preview1
-        - 4.0.0-preview2
+        - 4.0.1
       publish:
         description: 'Publish the image or not.'
         default: false
