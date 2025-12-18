@@ -1,6 +1,65 @@
 {
   "versions": [
     {
+      "path": "4.1.0/scala2.13-java21-python3-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java21-python3-ubuntu",
+        "4.1.0-java21-python3",
+        "4.1.0-python3",
+        "4.1.0",
+        "python3",
+        "latest"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java21-r-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java21-r-ubuntu",
+        "4.1.0-java21-r",
+        "4.1.0-r",
+        "r"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java21-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java21-ubuntu",
+        "4.1.0-java21-scala",
+        "4.1.0-scala",
+        "scala"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java21-python3-r-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java21-python3-r-ubuntu"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java17-python3-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java17-python3-ubuntu",
+        "4.1.0-java17",
+        "python3-java17"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java17-r-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java17-r-ubuntu",
+        "4.1.0-java17-r",
+        "r-java17"
+      ]
+    },
+    {
+      "path": "4.1.0/scala2.13-java17-ubuntu",
+      "tags": [
+        "4.1.0-scala2.13-java17-ubuntu",
+        "4.1.0-scala-java17",
+        "scala-java17"
+      ]
+    },
+    {
       "path": "4.1.0-preview4/scala2.13-java21-python3-ubuntu",
       "tags": [
         "4.1.0-preview4-scala2.13-java21-python3-ubuntu",
@@ -211,9 +270,7 @@
       "tags": [
         "4.0.1-scala2.13-java21-python3-ubuntu",
         "4.0.1-java21-python3",
-        "4.0.1-java21",
-        "python3",
-        "latest"
+        "4.0.1-java21"
       ]
     },
     {
@@ -241,24 +298,21 @@
       "tags": [
         "4.0.1-scala2.13-java17-python3-ubuntu",
         "4.0.1-python3",
-        "4.0.1",
-        "python3-java17"
+        "4.0.1"
       ]
     },
     {
       "path": "4.0.1/scala2.13-java17-r-ubuntu",
       "tags": [
         "4.0.1-scala2.13-java17-r-ubuntu",
-        "4.0.1-r",
-        "r"
+        "4.0.1-r"
       ]
     },
     {
       "path": "4.0.1/scala2.13-java17-ubuntu",
       "tags": [
         "4.0.1-scala2.13-java17-ubuntu",
-        "4.0.1-scala",
-        "scala"
+        "4.0.1-scala"
       ]
     },
     {
