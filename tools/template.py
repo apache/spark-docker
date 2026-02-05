@@ -63,6 +63,8 @@ GPG_KEY_DICT = {
     # issuer "dongjoon@apache.org"
     "4.0.1": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "dongjoon@apache.org"
+    "4.0.2": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
+    # issuer "dongjoon@apache.org"
     "4.1.0": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "gurwls223@apache.org"
     "4.1.1": "0FE4571297AB84440673665669600C8338F65970"
