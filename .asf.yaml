@@ -18,6 +18,8 @@
 github: 
   description: "Official Dockerfile for Apache Spark"
   homepage: https://spark.apache.org/
+  features:
+    issues: true
   labels: 
     - python
     - scala
