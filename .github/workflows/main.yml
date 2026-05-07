@@ -282,9 +282,10 @@ jobs:
           kubectl create clusterrolebinding serviceaccounts-cluster-admin --clusterrole=cluster-admin --group=system:serviceaccounts || true
           minikube image load ${{ env.IMAGE_URL }}
 
+          sed -i '/<id>volcano<\/id>/,/<\/profile>/ s|<activeByDefault>true</activeByDefault>|<activeByDefault>false</activeByDefault>|' resource-managers/kubernetes/integration-tests/pom.xml
+
           eval $(minikube docker-env)
           OPTS="-Pkubernetes -Pkubernetes-integration-tests "
-          OPTS+='-P!volcano '
           OPTS+="-Dspark.kubernetes.test.driverRequestCores=0.5 -Dspark.kubernetes.test.executorRequestCores=0.2 "
           OPTS+="-Dspark.kubernetes.test.deployMode=minikube "
           OPTS+="-Dspark.kubernetes.test.imageRepo=${TEST_REPO} -Dspark.kubernetes.test.imageTag=${UNIQUE_IMAGE_TAG} "
