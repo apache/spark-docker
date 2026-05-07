@@ -284,6 +284,7 @@ jobs:
 
           eval $(minikube docker-env)
           OPTS="-Pkubernetes -Pkubernetes-integration-tests "
+          OPTS+='-P!volcano '
           OPTS+="-Dspark.kubernetes.test.driverRequestCores=0.5 -Dspark.kubernetes.test.executorRequestCores=0.2 "
           OPTS+="-Dspark.kubernetes.test.deployMode=minikube "
           OPTS+="-Dspark.kubernetes.test.imageRepo=${TEST_REPO} -Dspark.kubernetes.test.imageTag=${UNIQUE_IMAGE_TAG} "
