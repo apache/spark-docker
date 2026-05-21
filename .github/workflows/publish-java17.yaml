@@ -29,6 +29,7 @@ on:
         type: choice
         options:
         - 4.2.0-preview5
+        - 4.1.2
         - 4.1.1
         - 4.1.0
         - 4.0.2
