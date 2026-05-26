@@ -5,7 +5,7 @@
 To report a security vulnerability in apache/spark-docker,
 follow the ASF security process at
 <https://www.apache.org/security/>. Reports can be sent privately
-to security@apache.org or to security@spark.apache.org.
+to security@apache.org or to private@spark.apache.org.
 
 ## Threat model
 
