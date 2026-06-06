@@ -21,12 +21,12 @@
 # Generate dockerfiles for specified spark version.
 #
 # Examples:
-# - Add 3.3.0 dockerfiles:
+# - Add 4.1.0 dockerfiles:
 #   $ ./add-dockerfiles.sh
-# - Add 3.3.1 dockerfiles:
-#   $ ./add-dockerfiles.sh 3.3.1
+# - Add 4.1.1 dockerfiles:
+#   $ ./add-dockerfiles.sh 4.1.1
 
-VERSION=${1:-"3.5.0"}
+VERSION=${1:-"4.1.0"}
 
 if echo $VERSION | grep -Eq "^4."; then
     # 4.x default
@@ -47,16 +47,11 @@ elif echo $VERSION | grep -Eq "^3."; then
     scala2.12-java11-python3-ubuntu
     scala2.12-java11-r-ubuntu
     scala2.12-java11-ubuntu
+    scala2.12-java17-python3-r-ubuntu
+    scala2.12-java17-python3-ubuntu
+    scala2.12-java17-r-ubuntu
+    scala2.12-java17-ubuntu
     "
-    # java17 images were added in 3.5.0. We need to skip java17 for 3.3.x and 3.4.x
-    if ! echo $VERSION | grep -Eq "^3.3|^3.4"; then
-        TAGS+="
-        scala2.12-java17-python3-r-ubuntu
-        scala2.12-java17-python3-ubuntu
-        scala2.12-java17-r-ubuntu
-        scala2.12-java17-ubuntu
-        "
-    fi
 fi
 
 for TAG in $TAGS; do
