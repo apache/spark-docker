@@ -40,6 +40,15 @@ if echo $VERSION | grep -Eq "^4."; then
     scala2.13-java21-r-ubuntu
     scala2.13-java21-ubuntu
     "
+    # Java 25 is added since Spark 4.2.0
+    if [ "$(echo $VERSION | cut -d. -f2)" -ge 2 ]; then
+        TAGS+="
+        scala2.13-java25-python3-r-ubuntu
+        scala2.13-java25-python3-ubuntu
+        scala2.13-java25-r-ubuntu
+        scala2.13-java25-ubuntu
+        "
+    fi
 elif echo $VERSION | grep -Eq "^3."; then
     # 3.x default
     TAGS="
@@ -70,7 +79,9 @@ for TAG in $TAGS; do
         OPTS+=" --scala-version 2.13"
     fi
 
-    if echo $TAG | grep -q "java21"; then
+    if echo $TAG | grep -q "java25"; then
+        OPTS+=" --java-version 25 --image eclipse-temurin:25-jammy"
+    elif echo $TAG | grep -q "java21"; then
         OPTS+=" --java-version 21 --image eclipse-temurin:21-jammy"
     elif echo $TAG | grep -q "java17"; then
         OPTS+=" --java-version 17 --image eclipse-temurin:17-jammy"
@@ -82,7 +93,7 @@ for TAG in $TAGS; do
 
     mkdir -p $VERSION/$TAG
 
-    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java21-ubuntu" ]; then
+    if [ "$TAG" == "scala2.12-java11-ubuntu" ] || [ "$TAG" == "scala2.12-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java17-ubuntu" ] || [ "$TAG" == "scala2.13-java21-ubuntu" ] || [ "$TAG" == "scala2.13-java25-ubuntu" ]; then
         python3 tools/template.py $OPTS > $VERSION/$TAG/Dockerfile
         python3 tools/template.py $OPTS -f entrypoint.sh.template > $VERSION/$TAG/entrypoint.sh
         chmod a+x $VERSION/$TAG/entrypoint.sh
