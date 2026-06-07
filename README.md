@@ -58,7 +58,7 @@ After this, the [spark](https://hub.docker.com/_/spark) docker images will be pu
 | Link          | https://hub.docker.com/r/apache/spark                  | https://hub.docker.com/_/spark                         |
 | source        | [apache/spark-docker](https://github.com/apache/spark-docker)                                           | [apache/spark-docker](https://github.com/apache/spark-docker) and [docker-library/official-images](https://github.com/docker-library/official-images/blob/master/library/spark)     |
 
-We recommend using [Spark Docker Official Image](https://hub.docker.com/_/spark), the [Apache Spark Image](https://hub.docker.com/r/apache/spark) are provided in case of delays in the review process by Docker community.
+We advise using official [Apache Spark images](https://hub.docker.com/r/apache/spark) to maintain architectural uniformity across related projects, including the [Apache Spark K8s Operator](https://hub.docker.com/r/apache/spark-kubernetes-operator) and [Apache Spark Connect for Swift](https://hub.docker.com/r/apache/spark-connect-swift).
 
 ## About this repository
 
