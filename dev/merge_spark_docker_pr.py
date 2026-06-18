@@ -19,7 +19,7 @@
 
 # Utility for creating well-formed pull request merges and pushing them to Apache
 # Spark.
-#   usage: ./merge_spark_docker_pr.py    (see config env vars below)
+#   usage: ./dev/merge_spark_docker_pr.py    (see config env vars below)
 #
 # This utility assumes you already have a local Spark git folder and that you
 # have added remotes corresponding to both (i) the github apache Spark
