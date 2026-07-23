@@ -40,6 +40,8 @@ GPG_KEY_DICT = {
     "3.5.7": "564CA14951C29266889F9C5B90E2BA86F7A9B307",
     # issuer "dongjoon@apache.org"
     "3.5.8": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
+    # issuer "holden@apache.org"
+    "3.5.9": "D05CF4F16124A4B97D7F96C417C47D58C0A604AC",
     # issuer "wenchen@apache.org"
     "4.0.0": "4DC9676CEF9A83E98FCA02784D6620843CD87F5A",
     # issuer "dongjoon@apache.org"
@@ -48,12 +50,16 @@ GPG_KEY_DICT = {
     "4.0.2": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "dongjoon@apache.org"
     "4.0.3": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
+    # issuer "holden@apache.org"
+    "4.0.4": "D05CF4F16124A4B97D7F96C417C47D58C0A604AC",
     # issuer "dongjoon@apache.org"
     "4.1.0": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "gurwls223@apache.org"
     "4.1.1": "0FE4571297AB84440673665669600C8338F65970",
     # issuer "ptoth@apache.org"
     "4.1.2": "564CA14951C29266889F9C5B90E2BA86F7A9B307",
+    # issuer "holden@apache.org"
+    "4.1.3": "D05CF4F16124A4B97D7F96C417C47D58C0A604AC",
     # issuer "gurwls223@apache.org"
     "4.2.0-preview5": "0FE4571297AB84440673665669600C8338F65970",
     # issuer "huaxingao@apache.org"
