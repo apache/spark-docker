@@ -124,6 +124,7 @@ case "$1" in
     ;;
 
   *)
+    attempt_setup_fake_passwd_entry
     # Non-spark-on-k8s command provided, proceeding in pass-through mode...
     exec "$@"
     ;;
