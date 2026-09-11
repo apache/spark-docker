@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM eclipse-temurin:25-jammy
+FROM eclipse-temurin:25-noble
 
 ARG spark_uid=185
 
