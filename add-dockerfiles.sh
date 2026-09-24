@@ -80,13 +80,13 @@ for TAG in $TAGS; do
     fi
 
     if echo $TAG | grep -q "java25"; then
-        OPTS+=" --java-version 25 --image eclipse-temurin:25-noble"
+        OPTS+=" --java-version 25 --image eclipse-temurin:25-resolute"
     elif echo $TAG | grep -q "java21"; then
-        OPTS+=" --java-version 21 --image eclipse-temurin:21-noble"
+        OPTS+=" --java-version 21 --image eclipse-temurin:21-resolute"
     elif echo $TAG | grep -q "java17"; then
-        OPTS+=" --java-version 17 --image eclipse-temurin:17-noble"
+        OPTS+=" --java-version 17 --image eclipse-temurin:17-resolute"
     elif echo $TAG | grep -q "java11"; then
-        OPTS+=" --java-version 11 --image eclipse-temurin:11-noble"
+        OPTS+=" --java-version 11 --image eclipse-temurin:11-resolute"
     fi
     
     OPTS+=" --spark-version $VERSION"
