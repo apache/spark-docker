@@ -70,6 +70,7 @@ The environment variables of entrypoint.sh are listed below:
 | SPARK_DIST_CLASSPATH | Distribution-defined classpath to add to processes |
 | SPARK_DRIVER_BIND_ADDRESS | Hostname or IP address where to bind listening sockets. See also `spark.driver.bindAddress` |
 | SPARK_EXECUTOR_JAVA_OPTS | The Java opts of Spark Executor |
+| SPARK_EXECUTOR_LIBRARY_PATH | The extra library path to be prepended to `LD_LIBRARY_PATH` of Spark Executor. See also `spark.executor.extraLibraryPath` |
 | SPARK_APPLICATION_ID | A unique identifier for the Spark application |
 | SPARK_EXECUTOR_POD_IP | The Pod IP address of spark executor |
 | SPARK_RESOURCE_PROFILE_ID | The resource profile ID |
