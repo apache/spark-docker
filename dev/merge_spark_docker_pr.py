@@ -33,7 +33,7 @@ import sys
 import traceback
 from urllib.request import urlopen
 from urllib.request import Request
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 try:
     import jira.client
@@ -56,10 +56,12 @@ JIRA_PASSWORD = os.environ.get("JIRA_PASSWORD", "")
 # will be unauthenticated. You should only need to configure this if you find yourself regularly
 # exceeding your IP's unauthenticated request rate limit. You can create an OAuth key at
 # https://github.com/settings/tokens. This script only requires the "public_repo" scope.
+# A token is required to post the merge summary comment on the pull request.
 GITHUB_OAUTH_KEY = os.environ.get("GITHUB_OAUTH_KEY")
 
 
 GITHUB_BASE = "https://github.com/apache/spark-docker/pull"
+GITHUB_COMMIT_BASE = "https://github.com/apache/spark-docker/commit"
 GITHUB_API_BASE = "https://api.github.com/repos/apache/spark-docker"
 JIRA_BASE = "https://issues.apache.org/jira/browse"
 JIRA_API_BASE = "https://issues.apache.org/jira"
@@ -83,6 +85,30 @@ def get_json(url):
         else:
             print("Unable to fetch URL, exiting: %s" % url)
         sys.exit(-1)
+
+
+def post_merge_comment(pr_num, target_ref, merge_hash):
+    if not GITHUB_OAUTH_KEY:
+        print("GITHUB_OAUTH_KEY is not set; skipping the merge comment.")
+        return
+
+    body = (
+        "**Merge Summary:**\n- merged into %s %s/%s\n\n"
+        "*Posted by `merge_spark_docker_pr.py`*"
+    ) % (target_ref, GITHUB_COMMIT_BASE, merge_hash)
+    print("\nPosting merge comment on PR #%s:\n%s" % (pr_num, body))
+
+    url = "%s/issues/%s/comments" % (GITHUB_API_BASE, pr_num)
+    data = json.dumps({"body": body}).encode("utf-8")
+    request = Request(url, data=data, method="POST")
+    request.add_header("Content-Type", "application/json")
+    request.add_header("Accept", "application/vnd.github+json")
+    request.add_header("Authorization", "token %s" % GITHUB_OAUTH_KEY)
+    try:
+        with urlopen(request) as response:
+            return json.load(response)
+    except URLError as e:
+        print("Failed to comment on PR #%s: %s" % (pr_num, e))
 
 
 def fail(msg):
@@ -539,7 +565,8 @@ def main():
 
     merged_refs = [target_ref]
 
-    merge_pr(pr_num, target_ref, title, body, pr_repo_desc)
+    merge_hash = merge_pr(pr_num, target_ref, title, body, pr_repo_desc)
+    post_merge_comment(pr_num, target_ref, merge_hash)
 
     if JIRA_IMPORTED:
         if JIRA_USERNAME and JIRA_PASSWORD:
