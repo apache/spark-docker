@@ -227,42 +227,6 @@ def merge_pr(pr_num, target_ref, title, body, pr_repo_desc):
     return merge_hash
 
 
-def cherry_pick(pr_num, merge_hash, default_branch):
-    pick_ref = input("Enter a branch name [%s]: " % default_branch)
-    if pick_ref == "":
-        pick_ref = default_branch
-
-    pick_branch_name = "%s_PICK_PR_%s_%s" % (BRANCH_PREFIX, pr_num, pick_ref.upper())
-
-    run_cmd("git fetch %s %s:%s" % (PUSH_REMOTE_NAME, pick_ref, pick_branch_name))
-    run_cmd("git checkout %s" % pick_branch_name)
-
-    try:
-        run_cmd("git cherry-pick -sx %s" % merge_hash)
-    except Exception as e:
-        msg = "Error cherry-picking: %s\nWould you like to manually fix-up this merge?" % e
-        continue_maybe(msg)
-        msg = "Okay, please fix any conflicts and finish the cherry-pick. Finished?"
-        continue_maybe(msg)
-
-    continue_maybe(
-        "Pick complete (local ref %s). Push to %s?" % (pick_branch_name, PUSH_REMOTE_NAME)
-    )
-
-    try:
-        run_cmd("git push %s %s:%s" % (PUSH_REMOTE_NAME, pick_branch_name, pick_ref))
-    except Exception as e:
-        clean_up()
-        fail("Exception while pushing: %s" % e)
-
-    pick_hash = run_cmd("git rev-parse %s" % pick_branch_name)[:8]
-    clean_up()
-
-    print("Pull request #%s picked into %s!" % (pr_num, pick_ref))
-    print("Pick hash: %s" % pick_hash)
-    return pick_ref
-
-
 def fix_version_from_branch(branch, versions):
     # Note: Assumes this is a sorted (newest->oldest) list of un-released versions
     if branch == "master":
@@ -272,7 +236,7 @@ def fix_version_from_branch(branch, versions):
         return list(filter(lambda x: x.name.startswith(branch_ver), versions))[-1]
 
 
-def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
+def resolve_jira_issue(target_ref, comment, default_jira_id=""):
     asf_jira = jira.client.JIRA(
         {"server": JIRA_API_BASE}, basic_auth=(JIRA_USERNAME, JIRA_PASSWORD)
     )
@@ -311,20 +275,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     # Consider only x.y.z versions
     versions = list(filter(lambda x: re.match(r"\d+\.\d+\.\d+", x.name), versions))
 
-    default_fix_versions = list(
-        map(lambda x: fix_version_from_branch(x, versions).name, merge_branches)
-    )
-    for v in default_fix_versions:
-        # Handles the case where we have forked a release branch but not yet made the release.
-        # In this case, if the PR is committed to the master branch and the release branch, we
-        # only consider the release branch to be the fix version. E.g. it is not valid to have
-        # both 1.1.0 and 1.0.0 as fix versions.
-        (major, minor, patch) = v.split(".")
-        if patch == "0":
-            previous = "%s.%s.%s" % (major, int(minor) - 1, 0)
-            if previous in default_fix_versions:
-                default_fix_versions = list(filter(lambda x: x != v, default_fix_versions))
-    default_fix_versions = ",".join(default_fix_versions)
+    default_fix_versions = fix_version_from_branch(target_ref, versions).name
 
     available_versions = set(list(map(lambda v: v.name, versions)))
     while True:
@@ -407,13 +358,13 @@ def choose_jira_assignee(issue, asf_jira):
             print("Error assigning JIRA, try again (or leave blank and fix manually)")
 
 
-def resolve_jira_issues(title, merge_branches, comment):
+def resolve_jira_issues(title, target_ref, comment):
     jira_ids = re.findall("SPARK-[0-9]{4,5}", title)
 
     if len(jira_ids) == 0:
-        resolve_jira_issue(merge_branches, comment)
+        resolve_jira_issue(target_ref, comment)
     for jira_id in jira_ids:
-        resolve_jira_issue(merge_branches, comment, jira_id)
+        resolve_jira_issue(target_ref, comment, jira_id)
 
 
 def standardize_jira_ref(text):
@@ -503,7 +454,6 @@ def main():
 
     pr_num = input("Which pull request would you like to merge? (e.g. 34): ")
     pr = get_json("%s/pulls/%s" % (GITHUB_API_BASE, pr_num))
-    pr_events = get_json("%s/issues/%s/events" % (GITHUB_API_BASE, pr_num))
 
     url = pr["url"]
 
@@ -563,8 +513,6 @@ def main():
     print("title\t%s\nsource\t%s\ntarget\t%s\nurl\t%s" % (title, pr_repo_desc, target_ref, url))
     continue_maybe("Proceed with merging pull request #%s?" % pr_num)
 
-    merged_refs = [target_ref]
-
     merge_hash = merge_pr(pr_num, target_ref, title, body, pr_repo_desc)
     post_merge_comment(pr_num, target_ref, merge_hash)
 
@@ -576,7 +524,7 @@ def main():
                 GITHUB_BASE,
                 pr_num,
             )
-            resolve_jira_issues(title, merged_refs, jira_comment)
+            resolve_jira_issues(title, target_ref, jira_comment)
         else:
             print("JIRA_USERNAME and JIRA_PASSWORD not set")
             print("Exiting without trying to close the associated JIRA.")
