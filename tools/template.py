@@ -52,6 +52,8 @@ GPG_KEY_DICT = {
     "4.0.3": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "holden@apache.org"
     "4.0.4": "D05CF4F16124A4B97D7F96C417C47D58C0A604AC",
+    # issuer "uros@apache.org"
+    "4.0.5": "0DDA6A8B2D83B106C61C880C05DAA54D59DCFFFC",
     # issuer "dongjoon@apache.org"
     "4.1.0": "F28C9C925C188C35E345614DEDA00CE834F0FC5C",
     # issuer "gurwls223@apache.org"
