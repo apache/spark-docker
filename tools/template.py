@@ -67,7 +67,9 @@ GPG_KEY_DICT = {
     # issuer "gurwls223@apache.org"
     "4.2.0-preview5": "0FE4571297AB84440673665669600C8338F65970",
     # issuer "huaxingao@apache.org"
-    "4.2.0": "709226B910E0F10917123B6259B586ADA5A538D1"
+    "4.2.0": "709226B910E0F10917123B6259B586ADA5A538D1",
+    # issuer "szehon@apache.org"
+    "4.2.1": "9442A2610B63B3F61860285F43F1222E5362CCF5"
 }
 
 
