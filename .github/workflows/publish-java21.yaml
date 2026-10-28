@@ -25,9 +25,10 @@ on:
       spark:
         description: 'The Spark version of Spark image.'
         required: true
-        default: '4.2.0'
+        default: '4.2.1'
         type: choice
         options:
+        - 4.2.1
         - 4.2.0
         - 4.1.4
         - 4.1.3
